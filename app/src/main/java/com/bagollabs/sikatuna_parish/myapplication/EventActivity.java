@@ -5,6 +5,8 @@ import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.view.View;
+import android.widget.Toast;
 
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -12,7 +14,7 @@ import org.json.JSONObject;
 
 import java.util.ArrayList;
 
-public class EventActivity extends AppCompatActivity {
+public class EventActivity extends AppCompatActivity implements MyAdapter.ItemClickListener {
     MyAdapter adapter;
 
     @Override
@@ -43,7 +45,13 @@ public class EventActivity extends AppCompatActivity {
         RecyclerView recyclerView = findViewById(R.id.event_list);
         recyclerView.setLayoutManager(new LinearLayoutManager(this));
         adapter = new MyAdapter(this, eventObjectList);
-//        adapter.setClickListener(this);
+        adapter.setClickListener(this);
         recyclerView.setAdapter(adapter);
+    }
+
+
+    @Override
+    public void onItemClick(View view, int position) {
+        Toast.makeText(this, "You clicked " + adapter.getItem(position) + " on row number " + position, Toast.LENGTH_SHORT).show();
     }
 }
