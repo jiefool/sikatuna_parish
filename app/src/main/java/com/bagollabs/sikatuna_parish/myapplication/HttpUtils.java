@@ -2,11 +2,13 @@ package com.bagollabs.sikatuna_parish.myapplication;
 import com.loopj.android.http.*;
 
 public class HttpUtils {
-    private static final String BASE_URL = "http://192.168.254.101:8000/";
+    private static final String BASE_URL = "http://192.168.254.103:8000/";
 
     private static AsyncHttpClient client = new AsyncHttpClient();
 
-    public static void get(String url, RequestParams params, AsyncHttpResponseHandler responseHandler) {
+    public static void get(String url, RequestParams params, AsyncHttpResponseHandler responseHandler, String accessToken) {
+        client.addHeader("Authorization", "Bearer "+accessToken);
+        client.addHeader("Aceept", "application/json");
         client.get(getAbsoluteUrl(url), params, responseHandler);
     }
 

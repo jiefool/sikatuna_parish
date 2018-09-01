@@ -20,6 +20,20 @@
                 android:id="@+id/calendarView"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content" />
+
+            <Button
+                android:id="@+id/view_all_events"
+                android:onClick="showAllEvents"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="View All Events" />
+
+            <TextView
+                android:id="@+id/home_error_text"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:textAlignment="center"
+                android:text="" />
         </LinearLayout>
     </FrameLayout>
 </android.support.constraint.ConstraintLayout>

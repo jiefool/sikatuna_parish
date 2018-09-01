@@ -1,48 +1,53 @@
 package com.bagollabs.sikatuna_parish.myapplication;
 
-import android.app.DownloadManager;
 import android.content.Context;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.os.Bundle;
-import android.support.annotation.NonNull;
-import android.support.design.widget.BottomNavigationView;
 import android.support.v7.app.AppCompatActivity;
-import android.text.Editable;
-import android.text.TextWatcher;
-import android.view.MenuItem;
 import android.view.View;
-import android.widget.CalendarView;
 import android.widget.EditText;
-import android.widget.FrameLayout;
-import android.widget.LinearLayout;
+
 import android.widget.TextView;
-import android.widget.Toast;
+
 
 import com.loopj.android.http.AsyncHttpClient;
-import com.loopj.android.http.AsyncHttpResponseHandler;
 import com.loopj.android.http.JsonHttpResponseHandler;
 import com.loopj.android.http.PersistentCookieStore;
 import com.loopj.android.http.RequestParams;
-
-import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
 import cz.msebera.android.httpclient.Header;
-import cz.msebera.android.httpclient.impl.cookie.BasicClientCookie;
+
 
 public class MainActivity extends AppCompatActivity implements View.OnFocusChangeListener {
+    SharedPreferences sharedpreferences;
+    public static final String mypreference = "mypref";
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+
+        sharedpreferences = getSharedPreferences(mypreference, Context.MODE_PRIVATE);
+
+        sharedpreferences = getSharedPreferences(mypreference,
+                Context.MODE_PRIVATE);
+
+        String accessToken;
+        if (sharedpreferences.contains("access_token")) {
+            accessToken = sharedpreferences.getString("access_token", "");
+            if(!accessToken.isEmpty()){
+                gotoHomeActivity();
+            }
+        }
     }
 
 
     public void userLogin(View view) {
-        EditText userName = (EditText)findViewById(R.id.userName);
-        EditText userPassword = (EditText)findViewById(R.id.userPassword);
+        EditText userName = findViewById(R.id.userName);
+        EditText userPassword = findViewById(R.id.userPassword);
 
         final String userNameStr = userName.getText().toString();
         final String userPasswordStr = userPassword.getText().toString();
@@ -57,21 +62,22 @@ public class MainActivity extends AppCompatActivity implements View.OnFocusChang
         params.add("client_secret", "TwEKNoGcwmmAJyCihFhs4nUu0n79q2dmgTyS0mrb");
         params.add("username", userNameStr);
         params.add("password", userPasswordStr);
-
         params.add("scope", "*");
 
         HttpUtils.post(url, params,new JsonHttpResponseHandler(){
             @Override
             public void onSuccess(int statusCode, Header[] headers, JSONObject response) {
                 MainActivity mainActivity = MainActivity.this;
-                AsyncHttpClient myClient = new AsyncHttpClient();
-                PersistentCookieStore myCookieStore = new PersistentCookieStore(getApplicationContext());
-                myClient.setCookieStore(myCookieStore);
+                SharedPreferences.Editor editor = sharedpreferences.edit();
+
+
 
                 try {
                     String accessToken = (String) response.get("access_token");
-                    addCookie("access_token", accessToken, myCookieStore);
-                    addCookie("username", userNameStr, myCookieStore);
+                    editor.putString("username", userNameStr);
+                    editor.putString("access_token", accessToken);
+                    editor.commit();
+
                     mainActivity.gotoHomeActivity();
 
                 } catch (JSONException e) {
@@ -87,16 +93,6 @@ public class MainActivity extends AppCompatActivity implements View.OnFocusChang
                 MainActivity mainActivity = MainActivity.this;
                 mainActivity.setErrorText("Invalid credentials.");
             }
-
-
-            public void addCookie(String name, String value, PersistentCookieStore cookieStore){
-                BasicClientCookie newCookie = new BasicClientCookie(name, value);
-                newCookie.setVersion(1);
-                newCookie.setDomain("sikatunaparish.com");
-                newCookie.setPath("/");
-                cookieStore.addCookie(newCookie);
-            }
-
 
         });
 
@@ -119,6 +115,7 @@ public class MainActivity extends AppCompatActivity implements View.OnFocusChang
     public void gotoHomeActivity(){
         Intent intent = new Intent(this, HomeActivity.class);
         startActivity(intent);
+        finish();
     }
 
 }
