@@ -2,4 +2,6 @@
     <string name="app_name">Sikatuna Parish</string>
     <string name="stop_alarm">Stop Alarm</string>
     <string name="event_id">0</string>
+    <string name="refresh">Refresh</string>
+    <string name="settings">Settings</string>
 </resources>
