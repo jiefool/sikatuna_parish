@@ -8,11 +8,13 @@ public class HttpUtils {
 
     public static void get(String url, RequestParams params, AsyncHttpResponseHandler responseHandler, String accessToken) {
         client.addHeader("Authorization", "Bearer "+accessToken);
-        client.addHeader("Aceept", "application/json");
+        client.addHeader("Accept", "application/json");
         client.get(getAbsoluteUrl(url), params, responseHandler);
     }
 
-    public static void post(String url, RequestParams params, AsyncHttpResponseHandler responseHandler) {
+    public static void post(String url, RequestParams params, AsyncHttpResponseHandler responseHandler, String accessToken) {
+        client.addHeader("Authorization", "Bearer "+accessToken);
+        client.addHeader("Accept", "application/json");
         client.post(getAbsoluteUrl(url), params, responseHandler);
     }
 

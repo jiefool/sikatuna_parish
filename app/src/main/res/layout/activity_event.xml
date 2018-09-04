@@ -21,11 +21,12 @@
         </android.support.v7.widget.RecyclerView>
 
         <Button
-            android:id="@+id/button2"
+            android:id="@+id/add_new_event"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
+            android:onClick="gotoAddNewEventActvity"
             android:layout_weight=".01"
-            android:text="Add Event"
+            android:text="Add New Event"
             android:visibility="visible" />
     </LinearLayout>
 </android.support.constraint.ConstraintLayout>

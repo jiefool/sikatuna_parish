@@ -1,7 +1,5 @@
 <resources>
     <string name="app_name">Sikatuna Parish</string>
-    <string name="title_calendar">Calendar</string>
-    <string name="title_events">Events</string>
-    <string name="title_groups">Groups</string>
-    <string name="title_activity_event">EventActivity</string>
+    <string name="stop_alarm">Stop Alarm</string>
+    <string name="event_id">0</string>
 </resources>

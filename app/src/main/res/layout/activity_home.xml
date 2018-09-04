@@ -28,6 +28,13 @@
                 android:layout_height="wrap_content"
                 android:text="View All Events" />
 
+            <Button
+                android:id="@+id/add_new_event"
+                android:onClick="addNewEvent"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="Add New Event" />
+
             <TextView
                 android:id="@+id/home_error_text"
                 android:layout_width="match_parent"
