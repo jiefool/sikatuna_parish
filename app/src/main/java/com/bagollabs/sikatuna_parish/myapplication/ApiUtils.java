@@ -1,5 +1,6 @@
 package com.bagollabs.sikatuna_parish.myapplication;
 
+import android.app.DownloadManager;
 import android.content.Context;
 
 import com.loopj.android.http.JsonHttpResponseHandler;
@@ -45,6 +46,13 @@ public class ApiUtils {
     public void createEvent(RequestParams params, JsonHttpResponseHandler jhrh){
         String url = "events/store";
         HttpUtils.post(url, params,jhrh, accessToken);
+    }
+
+
+    public void getEventsFromDate(String eventDate, JsonHttpResponseHandler jhrh){
+        String url = "events/"+eventDate;
+        RequestParams params = new RequestParams();
+        HttpUtils.get(url, params, jhrh, accessToken);
     }
 
 }

@@ -50,7 +50,6 @@ public class HomeActivity extends AppCompatActivity {
 
         apiUtils = new ApiUtils(this);
 
-        RequestParams params = new RequestParams();
         JsonHttpResponseHandler jhtrh = new JsonHttpResponseHandler() {
             @Override
             public void onSuccess(int statusCode, Header[] headers, JSONObject response) {
@@ -67,24 +66,8 @@ public class HomeActivity extends AppCompatActivity {
                 homeActivity.setErrorText("Unable to fetch data from server.");
             }
         };
-
         apiUtils.getEvents(jhtrh);
 
-        JsonHttpResponseHandler jhrh = new JsonHttpResponseHandler(){
-            @Override
-            public void onSuccess(int statusCode, Header[] headers, JSONArray response) {
-                System.out.println(response);
-                HomeActivity.priestUsers = response;
-
-            }
-
-            @Override
-            public void onFailure(int statusCode, Header[] headers, Throwable throwable, JSONObject errorResponse) {
-                super.onFailure(statusCode, headers, throwable, errorResponse);
-
-            }
-        };
-        apiUtils.getPriestUsers(jhrh);
 
         Bundle args = new Bundle();
         Calendar cal = Calendar.getInstance();
@@ -100,15 +83,6 @@ public class HomeActivity extends AppCompatActivity {
 
 
         caldroidFragment.setCaldroidListener(listener);
-    }
-
-
-
-    public void showPopup(View v) {
-        PopupMenu popup = new PopupMenu(this, v);
-        MenuInflater inflater = popup.getMenuInflater();
-        inflater.inflate(R.menu.actions, popup.getMenu());
-        popup.show();
     }
 
 
@@ -138,9 +112,16 @@ public class HomeActivity extends AppCompatActivity {
         }
     }
 
+
+
+
+
     private void gotoSettingsActivity() {
 
     }
+
+
+
 
     private void refreshActivity(){
         this.recreate();
@@ -160,9 +141,23 @@ public class HomeActivity extends AppCompatActivity {
     }
 
     public void addNewEvent(View view) {
-        Intent intent = new Intent(HomeActivity.this, AddNewEventActivity.class);
-        intent.putExtra("priest_users", HomeActivity.priestUsers.toString());
-        startActivity(intent);
+        JsonHttpResponseHandler jhrh = new JsonHttpResponseHandler(){
+            @Override
+            public void onSuccess(int statusCode, Header[] headers, JSONArray response) {
+                System.out.println(response);
+                HomeActivity.priestUsers = response;
+                Intent intent = new Intent(HomeActivity.this, AddNewEventActivity.class);
+                intent.putExtra("priest_users", HomeActivity.priestUsers.toString());
+                startActivity(intent);
+            }
+
+            @Override
+            public void onFailure(int statusCode, Header[] headers, Throwable throwable, JSONObject errorResponse) {
+                HomeActivity homeActivity = HomeActivity.this;
+                homeActivity.setErrorText("Unable to fetch priest data from server.");
+            }
+        };
+        apiUtils.getPriestUsers(jhrh);
     }
 
 
@@ -195,12 +190,13 @@ public class HomeActivity extends AppCompatActivity {
                 SimpleDateFormat formatter = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
                 try {
                     Date eventAlarmDate = formatter.parse(thisObj.getString("alarm"));
+                    Date eventStartDate = formatter.parse(thisObj.getString("time_start"));
                     Calendar cal = Calendar.getInstance();
                     cal.setTime(eventAlarmDate);
 
                     ColorDrawable primary = new ColorDrawable(getResources().getColor(R.color.colorPrimary));
-                    caldroidFragment.setBackgroundDrawableForDate(primary, eventAlarmDate);
-                    caldroidFragment.setTextColorForDate(R.color.colorAccent, eventAlarmDate);
+                    caldroidFragment.setBackgroundDrawableForDate(primary, eventStartDate);
+                    caldroidFragment.setTextColorForDate(R.color.colorAccent, eventStartDate);
                     caldroidFragment.refreshView();
 
 
@@ -226,9 +222,27 @@ public class HomeActivity extends AppCompatActivity {
 
         @Override
         public void onSelectDate(Date date, View view) {
-            SimpleDateFormat formatter = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");;
+            SimpleDateFormat formatter = new SimpleDateFormat("yyyy-MM-dd");
+            String eventDate = formatter.format(date);
             Toast.makeText(getApplicationContext(), formatter.format(date),
                     Toast.LENGTH_SHORT).show();
+
+            JsonHttpResponseHandler jhrh = new JsonHttpResponseHandler(){
+                @Override
+                public void onSuccess(int statusCode, Header[] headers, JSONObject response) {
+                    System.out.println(response);
+                    Intent intent = new Intent(HomeActivity.this, EventActivity.class);
+                    intent.putExtra("events", response.toString());
+                    startActivity(intent);
+                }
+
+                @Override
+                public void onFailure(int statusCode, Header[] headers, Throwable throwable, JSONObject errorResponse) {
+                    HomeActivity homeActivity = HomeActivity.this;
+                    homeActivity.setErrorText("Unable to fetch data from server.");
+                }
+            };
+            apiUtils.getEventsFromDate(eventDate, jhrh);
         }
     };
 
