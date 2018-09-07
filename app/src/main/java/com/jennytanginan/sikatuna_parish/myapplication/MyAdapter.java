@@ -1,4 +1,4 @@
-package com.bagollabs.sikatuna_parish.myapplication;
+package com.jennytanginan.sikatuna_parish.myapplication;
 
 import android.content.Context;
 import android.support.v7.widget.RecyclerView;
@@ -10,6 +10,9 @@ import android.widget.TextView;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
+import java.util.Date;
 import java.util.List;
 
 public class MyAdapter extends RecyclerView.Adapter<MyAdapter.ViewHolder> {
@@ -35,8 +38,26 @@ public class MyAdapter extends RecyclerView.Adapter<MyAdapter.ViewHolder> {
     public void onBindViewHolder(ViewHolder holder, int position) {
         JSONObject event = mData.get(position);
         try {
-            holder.myTextView.setText(event.getString("name"));
+            holder.eventName.setText(event.getString("name"));
+
+            SimpleDateFormat formatter = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+            Date timeStart = formatter.parse(event.getString("time_start"));
+            Date timeEnd = formatter.parse(event.getString("time_start"));
+
+            formatter = new SimpleDateFormat("EEE, d MMM yyyy HH:mm aaa");
+            String timeStartz = formatter.format(timeStart);
+            String timeEndz = formatter.format(timeEnd);
+
+            holder.timeStart.setText(timeStartz);
+            holder.timeEnd.setText(timeEndz);
+
+            JSONObject priestDate = event.getJSONObject("user");
+            holder.priest.setText(priestDate.getString("name"));
+
+            holder.details.setText(event.getString("details"));
         } catch (JSONException e) {
+            e.printStackTrace();
+        } catch (ParseException e) {
             e.printStackTrace();
         }
     }
@@ -49,11 +70,19 @@ public class MyAdapter extends RecyclerView.Adapter<MyAdapter.ViewHolder> {
 
     // stores and recycles views as they are scrolled off screen
     public class ViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener {
-        TextView myTextView;
+        TextView eventName;
+        TextView timeStart;
+        TextView timeEnd;
+        TextView priest;
+        TextView details;
 
         ViewHolder(View itemView) {
             super(itemView);
-            myTextView = itemView.findViewById(R.id.event_name);
+            eventName = itemView.findViewById(R.id.event_name);
+            timeStart = itemView.findViewById(R.id.time_start);
+            timeEnd = itemView.findViewById(R.id.time_end);
+            priest = itemView.findViewById(R.id.priest);
+            details = itemView.findViewById(R.id.details);
             itemView.setOnClickListener(this);
         }
 

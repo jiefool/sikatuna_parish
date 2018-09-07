@@ -1,4 +1,4 @@
-package com.bagollabs.sikatuna_parish.myapplication;
+package com.jennytanginan.sikatuna_parish.myapplication;
 
 import android.annotation.SuppressLint;
 import android.content.Intent;

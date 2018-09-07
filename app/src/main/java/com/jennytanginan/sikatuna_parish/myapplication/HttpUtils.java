@@ -1,4 +1,4 @@
-package com.bagollabs.sikatuna_parish.myapplication;
+package com.jennytanginan.sikatuna_parish.myapplication;
 import com.loopj.android.http.*;
 
 public class HttpUtils {

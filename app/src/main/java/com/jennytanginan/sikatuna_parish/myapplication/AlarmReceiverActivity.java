@@ -1,4 +1,4 @@
-package com.bagollabs.sikatuna_parish.myapplication;
+package com.jennytanginan.sikatuna_parish.myapplication;
 
 import android.app.Activity;
 import android.content.Context;
@@ -31,7 +31,7 @@ public class AlarmReceiverActivity extends Activity {
         Intent intent = getIntent();
 
 
-        TextView eventIdTv = findViewById(R.id.event_id);
+        TextView eventIdTv = findViewById(R.id.event_name);
         Integer eventId = intent.getExtras().getInt("event_id");
         eventIdTv.setText(eventId.toString());
 

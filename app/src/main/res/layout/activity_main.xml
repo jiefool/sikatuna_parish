@@ -6,7 +6,7 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:orientation="vertical"
-    tools:context="com.bagollabs.sikatuna_parish.myapplication.MainActivity">
+    tools:context="com.jennytanginan.sikatuna_parish.myapplication.MainActivity">
 
     <FrameLayout
         android:id="@+id/content"
