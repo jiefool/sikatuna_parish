@@ -5,7 +5,6 @@ import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.Button;
 import android.widget.TextView;
 
 import org.json.JSONException;
@@ -16,13 +15,13 @@ import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.List;
 
-public class MyAdapter extends RecyclerView.Adapter<MyAdapter.ViewHolder> {
+public class GroupAdapter extends RecyclerView.Adapter<GroupAdapter.ViewHolder> {
     private List<JSONObject> mData;
     private LayoutInflater mInflater;
     private ItemClickListener mClickListener;
 
     // data is passed into the constructor
-    MyAdapter(Context context, List<JSONObject> data) {
+    GroupAdapter(Context context, List<JSONObject> data) {
         this.mInflater = LayoutInflater.from(context);
         this.mData = data;
     }
@@ -30,42 +29,19 @@ public class MyAdapter extends RecyclerView.Adapter<MyAdapter.ViewHolder> {
     // inflates the row layout from xml when needed
     @Override
     public ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
-        View view = mInflater.inflate(R.layout.recyclerview_row, parent, false);
+        View view = mInflater.inflate(R.layout.group_row, parent, false);
         return new ViewHolder(view);
     }
 
     // binds the data to the TextView in each row
     @Override
     public void onBindViewHolder(ViewHolder holder, int position) {
-        final JSONObject event = mData.get(position);
+        JSONObject group = mData.get(position);
         try {
-            holder.eventName.setText(event.getString("name"));
-
-            SimpleDateFormat formatter = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
-            Date timeStart = formatter.parse(event.getString("time_start"));
-            Date timeEnd = formatter.parse(event.getString("time_start"));
-
-            formatter = new SimpleDateFormat("EEE, d MMM yyyy hh:mm aaa");
-            String timeStartz = formatter.format(timeStart);
-            String timeEndz = formatter.format(timeEnd);
-
-            holder.timeStart.setText(timeStartz);
-            holder.timeEnd.setText(timeEndz);
-
-            JSONObject priestDate = event.getJSONObject("user");
-            holder.priest.setText(priestDate.getString("name"));
-
-            holder.details.setText(event.getString("details"));
-
-            holder.deleteBtn.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View view) {
-                    System.out.println(event);
-                }
-            });
+            holder.groupName.setText(group.getString("name"));
+            holder.groupLeaderName.setText(group.getString("leader"));
+            holder.groupContactNumber.setText(group.getString("contact_number"));
         } catch (JSONException e) {
-            e.printStackTrace();
-        } catch (ParseException e) {
             e.printStackTrace();
         }
     }
@@ -78,29 +54,17 @@ public class MyAdapter extends RecyclerView.Adapter<MyAdapter.ViewHolder> {
 
     // stores and recycles views as they are scrolled off screen
     public class ViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener {
-        TextView eventName;
-        TextView timeStart;
-        TextView timeEnd;
-        TextView priest;
-        TextView details;
-        Button editBtn;
-        Button deleteBtn;
+        TextView groupName;
+        TextView groupLeaderName;
+        TextView groupContactNumber;
 
         ViewHolder(View itemView) {
             super(itemView);
-            eventName = itemView.findViewById(R.id.event_name);
-            timeStart = itemView.findViewById(R.id.time_start);
-            timeEnd = itemView.findViewById(R.id.time_end);
-            priest = itemView.findViewById(R.id.priest);
-            details = itemView.findViewById(R.id.details);
-
-            editBtn = itemView.findViewById(R.id.edit_event_btn);
-            deleteBtn = itemView.findViewById(R.id.delete_event_btn);
-
-
+            groupName = itemView.findViewById(R.id.group_name);
+            groupLeaderName = itemView.findViewById(R.id.group_leader_name);
+            groupContactNumber = itemView.findViewById(R.id.group_contact_number);
             itemView.setOnClickListener(this);
         }
-
 
         @Override
         public void onClick(View view) {

@@ -39,6 +39,12 @@ public class AddNewEventActivity extends AppCompatActivity implements AdapterVie
     ApiUtils apiUtils;
     TextView createEventResponse;
 
+    EditText etName;
+    EditText etTimeStart;
+    EditText etTimeEnd;
+    EditText etAlarm;
+    EditText etDetails;
+
     private SlideDateTimeListener listener = new SlideDateTimeListener() {
 
         @Override
@@ -68,6 +74,12 @@ public class AddNewEventActivity extends AppCompatActivity implements AdapterVie
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_add_new_event);
+
+        etName = findViewById(R.id.name);
+        etTimeStart = findViewById(R.id.start_datetime);
+        etTimeEnd = findViewById(R.id.end_datetime);
+        etAlarm = findViewById(R.id.alarm);
+        etDetails = findViewById(R.id.details);
 
         setDateStart =  findViewById(R.id.button_start_datetime);
         setDateEnd =  findViewById(R.id.button_end_datetime);
@@ -125,20 +137,11 @@ public class AddNewEventActivity extends AppCompatActivity implements AdapterVie
     }
 
     public void submitEventDetails(View view) {
-        EditText etName = findViewById(R.id.name);
-        EditText etTimeStart = findViewById(R.id.start_datetime);
-        EditText etTimeEnd = findViewById(R.id.end_datetime);
-        EditText etAlarm = findViewById(R.id.alarm);
-        EditText etDetails = findViewById(R.id.details);
-
         String name = etName.getText().toString();
         String timeStart = etTimeStart.getText().toString();
         String timeEnd = etTimeEnd.getText().toString();
         String alarm = etAlarm.getText().toString();
         String details = etDetails.getText().toString();
-
-        String url = "events/store";
-
 
         RequestParams params = new RequestParams();
         params.add("name", name);
@@ -176,5 +179,13 @@ public class AddNewEventActivity extends AppCompatActivity implements AdapterVie
     @Override
     public void onNothingSelected(AdapterView<?> adapterView) {
 
+    }
+
+    public void clearFields(View view) {
+        etName.setText("");
+        etTimeStart.setText("");
+        etTimeEnd.setText("");
+        etAlarm.setText("");
+        etDetails.setText("");
     }
 }

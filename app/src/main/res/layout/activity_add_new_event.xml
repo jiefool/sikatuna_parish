@@ -39,6 +39,8 @@
             <Button
                 android:id="@+id/button_start_datetime"
                 android:layout_width="match_parent"
+                android:backgroundTint="@color/colorPrimary"
+                android:textColor="@color/caldroid_white"
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
                 android:text="Set Date" />
@@ -63,6 +65,8 @@
             <Button
                 android:id="@+id/button_end_datetime"
                 android:layout_width="match_parent"
+                android:backgroundTint="@color/colorPrimary"
+                android:textColor="@color/caldroid_white"
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
                 android:text="Set Date" />
@@ -95,7 +99,18 @@
             android:onClick="submitEventDetails"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:text="Submit" />
+            android:backgroundTint="@color/colorPrimary"
+            android:textColor="@color/caldroid_white"
+            android:text="@string/create_event" />
+
+        <Button
+            android:id="@+id/clear_fields"
+            android:onClick="clearFields"
+            android:backgroundTint="@color/colorPrimary"
+            android:textColor="@color/caldroid_white"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="@string/clear" />
 
         <TextView
             android:id="@+id/create_event_response"

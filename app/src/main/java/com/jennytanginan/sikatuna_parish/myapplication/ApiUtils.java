@@ -23,7 +23,7 @@ public class ApiUtils {
         RequestParams params = new RequestParams();
         params.add("grant_type", "password");
         params.add("client_id", "2");
-        params.add("client_secret", "TwEKNoGcwmmAJyCihFhs4nUu0n79q2dmgTyS0mrb");
+        params.add("client_secret", "ZiRgHlb3r0zMaovxii6xvxoVMC1bILVVIDglKVqe");
         params.add("username", email);
         params.add("password", password);
         params.add("scope", "*");
@@ -55,4 +55,14 @@ public class ApiUtils {
         HttpUtils.get(url, params, jhrh, accessToken);
     }
 
+    public void createGroup(RequestParams params, JsonHttpResponseHandler jhrh){
+        String url = "groups/store";
+        HttpUtils.post(url, params,jhrh, accessToken);
+    }
+
+    public void getGroups(JsonHttpResponseHandler jhrh){
+        String url = "groups";
+        RequestParams params = new RequestParams();
+        HttpUtils.get(url, params,jhrh, accessToken);
+    }
 }

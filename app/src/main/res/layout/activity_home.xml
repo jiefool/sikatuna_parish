@@ -8,6 +8,7 @@
 
     <FrameLayout
         android:layout_width="match_parent"
+        android:padding="20dp"
         android:layout_height="match_parent">
 
         <LinearLayout
@@ -24,16 +25,20 @@
             <Button
                 android:id="@+id/view_all_events"
                 android:onClick="showAllEvents"
+                android:backgroundTint="@color/colorPrimary"
+                android:textColor="@color/caldroid_white"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:text="View All Events" />
+                android:text="View Events" />
 
             <Button
-                android:id="@+id/add_new_event"
-                android:onClick="addNewEvent"
+                android:id="@+id/view_groups_button"
+                android:onClick="viewGroups"
+                android:backgroundTint="@color/colorPrimary"
+                android:textColor="@color/caldroid_white"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:text="Add New Event" />
+                android:text="@string/view_groups" />
 
             <TextView
                 android:id="@+id/home_error_text"

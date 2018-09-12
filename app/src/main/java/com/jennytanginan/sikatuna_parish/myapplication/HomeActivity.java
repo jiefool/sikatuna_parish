@@ -42,6 +42,7 @@ public class HomeActivity extends AppCompatActivity {
     public static JSONArray priestUsers = new JSONArray();
     CaldroidFragment caldroidFragment = new CaldroidFragment();
     ApiUtils apiUtils;
+    CurrentUser currentUser;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -49,6 +50,7 @@ public class HomeActivity extends AppCompatActivity {
         setContentView(R.layout.activity_home);
 
         apiUtils = new ApiUtils(this);
+        currentUser = new CurrentUser(this);
 
         JsonHttpResponseHandler jhtrh = new JsonHttpResponseHandler() {
             @Override
@@ -107,13 +109,22 @@ public class HomeActivity extends AppCompatActivity {
             case R.id.settings:
                 gotoSettingsActivity();
                 return true;
+            case R.id.logout:
+                logoutUser();
+                return true;
             default:
                 return super.onOptionsItemSelected(item);
         }
     }
 
+    private void logoutUser() {
+        currentUser.setDataToSharedPreferences("email", "");
+        currentUser.setDataToSharedPreferences("access_token", "");
 
-
+        Intent i = new Intent(HomeActivity.this, MainActivity.class);
+        finish();
+        startActivity(i);
+    }
 
 
     private void gotoSettingsActivity() {
@@ -201,7 +212,7 @@ public class HomeActivity extends AppCompatActivity {
 
 
                     Intent intent = new Intent(this, AlarmReceiver.class);
-                    intent.putExtra("event_id", thisObj.getInt("id"));
+                    intent.putExtra("event", thisObj.toString());
                     PendingIntent pi = PendingIntent.getBroadcast(this, thisObj.getInt("id"), intent,  thisObj.getInt("id"));
                     am.cancel(pi);
                     am.set(AlarmManager.RTC_WAKEUP, cal.getTimeInMillis(), pi);
@@ -247,4 +258,8 @@ public class HomeActivity extends AppCompatActivity {
     };
 
 
+    public void viewGroups(View view) {
+        Intent intent = new Intent(HomeActivity.this, GroupActivity.class);
+        startActivity(intent);
+    }
 }
