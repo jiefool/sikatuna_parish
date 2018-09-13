@@ -46,7 +46,9 @@ public class AddGroupActivity extends AppCompatActivity {
             @Override
             public void onSuccess(int statusCode, Header[] headers, JSONObject response) {
                 System.out.println(response);
-                AddGroupActivity.this.setResponseText("Group successfully created.");
+                Intent intent = new Intent(AddGroupActivity.this, GroupActivity.class);
+                finish();
+                startActivity(intent);
             }
 
             @Override

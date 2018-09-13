@@ -16,4 +16,12 @@
     <string name="delete">Delete</string>
     <string name="event_name">Event Name</string>
     <string name="logout">Logout</string>
+    <string name="update">Update</string>
+    <string name="details">Details</string>
+    <string name="priest">Priest</string>
+    <string name="time_end">Time End</string>
+    <string name="time_start">Time Start</string>
+    <string name="confirm">Confirm</string>
+    <string name="cancel">Cancel</string>
+    <string name="save_to_docs">Save to Documents</string>
 </resources>

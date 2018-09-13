@@ -72,6 +72,7 @@ public class GroupActivity extends AppCompatActivity implements GroupAdapter.Ite
 
     public void gotoAddNewGroupActvity(View view) {
         Intent intent = new Intent(this,AddGroupActivity.class);
+        finish();
         startActivity(intent);
     }
 

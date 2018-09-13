@@ -31,6 +31,12 @@ public class ApiUtils {
         HttpUtils.post(url, params,jsonHttpResponseHandler, accessToken);
     }
 
+    public void getUserDetails(String email, JsonHttpResponseHandler jhrh){
+        String url = "user/"+email+"/data";
+        RequestParams params = new RequestParams();
+        HttpUtils.get(url, params, jhrh, accessToken);
+    }
+
     public void getPriestUsers(JsonHttpResponseHandler jhrh){
         String url = "users/priest";
         RequestParams params = new RequestParams();
@@ -43,11 +49,33 @@ public class ApiUtils {
         HttpUtils.get(url, params,jhrh, accessToken);
     }
 
+    public void getUserEvents(String userId, JsonHttpResponseHandler jhrh){
+        String url = userId + "/events";
+        RequestParams params = new RequestParams();
+        HttpUtils.get(url, params,jhrh, accessToken);
+    }
+
     public void createEvent(RequestParams params, JsonHttpResponseHandler jhrh){
         String url = "events/store";
         HttpUtils.post(url, params,jhrh, accessToken);
     }
 
+    public void updateEvent(String eventId, RequestParams params, JsonHttpResponseHandler jhrh){
+        String url = "events/"+eventId+"/update";
+        HttpUtils.post(url, params,jhrh, accessToken);
+    }
+
+    public void confirmEvent(String eventId, JsonHttpResponseHandler jhrh){
+        String url = "events/"+eventId+"/confirm";
+        RequestParams params = new RequestParams();
+        HttpUtils.get(url, params,jhrh, accessToken);
+    }
+
+    public void deleteEvent(String eventId, JsonHttpResponseHandler jhrh){
+        String url = "events/"+eventId+"/destroy";
+        RequestParams params = new RequestParams();
+        HttpUtils.post(url, params,jhrh, accessToken);
+    }
 
     public void getEventsFromDate(String eventDate, JsonHttpResponseHandler jhrh){
         String url = "events/"+eventDate;
@@ -65,4 +93,6 @@ public class ApiUtils {
         RequestParams params = new RequestParams();
         HttpUtils.get(url, params,jhrh, accessToken);
     }
+
+
 }

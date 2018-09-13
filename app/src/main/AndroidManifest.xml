@@ -29,7 +29,9 @@
 
         <activity android:name=".AddNewEventActivity" />
         <activity android:name=".GroupActivity" />
-        <activity android:name=".AddGroupActivity"></activity>
+        <activity android:name=".AddGroupActivity" />
+        <activity android:name=".EditEventActivity" />
+        <activity android:name=".ConfirmEventActivity"></activity>
     </application>
 
 </manifest>

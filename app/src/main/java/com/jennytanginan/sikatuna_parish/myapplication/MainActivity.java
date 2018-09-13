@@ -71,12 +71,6 @@ public class MainActivity extends AppCompatActivity implements View.OnFocusChang
 
         apiUtils.loginUser(userNameStr, userPasswordStr, jhrh, "");
 
-//        if (userNameStr.equals("jenny") && userPasswordStr.equals("jenny123")){
-//            MainActivity.this.gotoHomeActivity();
-//        }else{
-//            MainActivity.this.setErrorText("Unable to login with those credentials.");
-//        }
-
     }
 
 
