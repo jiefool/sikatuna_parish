@@ -1,14 +1,17 @@
 package com.jennytanginan.sikatuna_parish.myapplication;
 
+import android.content.Context;
 import android.content.Intent;
 import android.media.Ringtone;
 import android.media.RingtoneManager;
 import android.net.Uri;
+import android.os.Environment;
 import android.os.SystemClock;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.util.Log;
 import android.view.View;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -19,14 +22,21 @@ import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import java.io.File;
 import java.io.FileNotFoundException;
+import java.io.FileOutputStream;
+import java.io.FileWriter;
 import java.io.IOException;
 import java.io.OutputStreamWriter;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
 
 import cz.msebera.android.httpclient.Header;
+
+import static android.os.Environment.DIRECTORY_DOCUMENTS;
+import static com.loopj.android.http.AsyncHttpClient.LOG_TAG;
 
 public class EventActivity extends AppCompatActivity implements MyAdapter.ItemClickListener {
     MyAdapter adapter;
@@ -129,34 +139,80 @@ public class EventActivity extends AppCompatActivity implements MyAdapter.ItemCl
         recyclerView.setAdapter(adapter);
     }
 
-    public void saveToDocument(View view) throws JSONException {
+    public void saveToDocument(View view) throws JSONException, IOException {
+        Boolean isWritable = this.isExternalStorageWritable();
         Date currentTime = Calendar.getInstance().getTime();
-        String fileName = currentTime.toString() + "_events.txt";
+        String fileName = currentTime.getTime() + "_events.txt";
 
-        String data = "";
-        for(int i=0;i<eventObjectList.size();i++){
-            data+=eventObjectList.get(i).getString("name");
-            data+="\n";
-            data+=eventObjectList.get(i).getString("time_start");
-            data+="\n";
-            data+=eventObjectList.get(i).getString("time_end");
-            data+="\n";
-            data+=eventObjectList.get(i).getJSONObject("user").getString("name");
-            data+="\n";
-            data+=eventObjectList.get(i).getString("details");
-            data+="\n";
-            data+="======================================";
-            data+="\n";
-        }
+        if (isWritable) {
 
-        try {
-            OutputStreamWriter outputStreamWriter = new OutputStreamWriter(this.openFileOutput(fileName, this.getApplicationContext().MODE_PRIVATE));
-            outputStreamWriter.write(data);
-            outputStreamWriter.close();
-        } catch (FileNotFoundException e) {
-            e.printStackTrace();
-        } catch (IOException e) {
-            e.printStackTrace();
+
+            String data = "";
+            for (int i = 0; i < eventObjectList.size(); i++) {
+                data += eventObjectList.get(i).getString("name");
+                data += "\n";
+                data += eventObjectList.get(i).getString("time_start");
+                data += "\n";
+                data += eventObjectList.get(i).getString("time_end");
+                data += "\n";
+                data += eventObjectList.get(i).getJSONObject("user").getString("name");
+                data += "\n";
+                data += eventObjectList.get(i).getString("details");
+                data += "\n";
+                data += "======================================";
+                data += "\n";
+            }
+
+
+            File dir = getPublicDocumentStorageDir("/SikatunaParishEvents/");
+
+
+            File file = new File(dir, fileName);
+
+            System.out.println(file);
+
+            //Write to file
+            try (FileWriter fileWriter = new FileWriter(file, )) {
+                fileWriter.write(data);
+                fileWriter.flush();
+                fileWriter.close();
+            } catch (IOException e) {
+                //Handle exception
+            }
+
+            scanMedia(file.getPath());
+
+            Context context = getApplicationContext();
+            int duration = Toast.LENGTH_SHORT;
+
+            Toast toast = Toast.makeText(context, "Data saved to "+file.toString(), duration);
+            toast.show();
+
         }
+    }
+    public boolean isExternalStorageWritable() {
+        String state = Environment.getExternalStorageState();
+        if (Environment.MEDIA_MOUNTED.equals(state)) {
+            return true;
+        }
+        return false;
+    }
+
+    private void scanMedia(String path) {
+        File file = new File(path);
+        Uri uri = Uri.fromFile(file);
+        Intent scanFileIntent = new Intent(
+                Intent.ACTION_MEDIA_SCANNER_SCAN_FILE, uri);
+        sendBroadcast(scanFileIntent);
+    }
+
+    public File getPublicDocumentStorageDir(String dirName) {
+        // Get the directory for the user's public pictures directory.
+        File file = new File(Environment.getExternalStoragePublicDirectory(
+                Environment.DIRECTORY_DOCUMENTS), dirName);
+        if (!file.mkdirs()) {
+            Log.e(LOG_TAG, "Directory not created");
+        }
+        return file;
     }
 }
