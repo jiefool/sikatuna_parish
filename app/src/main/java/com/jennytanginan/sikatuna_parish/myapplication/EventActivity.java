@@ -37,6 +37,10 @@ import java.util.Date;
 import cz.msebera.android.httpclient.Header;
 
 import static android.os.Environment.DIRECTORY_DOCUMENTS;
+import static android.os.Environment.getExternalStorageDirectory;
+import static android.os.Environment.getExternalStoragePublicDirectory;
+import static android.os.Environment.getExternalStorageState;
+import static android.os.Environment.getRootDirectory;
 import static com.loopj.android.http.AsyncHttpClient.LOG_TAG;
 
 public class EventActivity extends AppCompatActivity implements MyAdapter.ItemClickListener {
@@ -175,12 +179,8 @@ public class EventActivity extends AppCompatActivity implements MyAdapter.ItemCl
             }
 
 
-            File dir = getPublicDocumentStorageDir("/SikatunaParishEvents/");
-
-
+            File dir = getPublicDocumentStorageDir("/SikatunaParishEvents");
             File file = new File(dir, fileName);
-
-            System.out.println(file);
 
             //Write to file
             try (FileWriter fileWriter = new FileWriter(file, true)) {
@@ -219,7 +219,7 @@ public class EventActivity extends AppCompatActivity implements MyAdapter.ItemCl
 
     public File getPublicDocumentStorageDir(String dirName) {
         // Get the directory for the user's public pictures directory.
-        File file = new File(Environment.getExternalStoragePublicDirectory(
+        File file = new File(getExternalStoragePublicDirectory(
                 Environment.DIRECTORY_DOCUMENTS), dirName);
         if (!file.mkdirs()) {
             Log.e(LOG_TAG, "Directory not created");
