@@ -39,9 +39,10 @@ import hirondelle.date4j.DateTime;
 
 public class HomeActivity extends AppCompatActivity {
     public static JSONObject response = new JSONObject();
-    public static JSONArray priestUsers = new JSONArray();
     CaldroidFragment caldroidFragment = new CaldroidFragment();
     ApiUtils apiUtils;
+    CurrentUser currentUser;
+    Boolean showUnconfirmedEvents = false;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -49,24 +50,9 @@ public class HomeActivity extends AppCompatActivity {
         setContentView(R.layout.activity_home);
 
         apiUtils = new ApiUtils(this);
+        currentUser = new CurrentUser(this);
 
-        JsonHttpResponseHandler jhtrh = new JsonHttpResponseHandler() {
-            @Override
-            public void onSuccess(int statusCode, Header[] headers, JSONObject response) {
-                System.out.println(response);
-                HomeActivity.response = response;
-                HomeActivity homeActivity = HomeActivity.this;
-                homeActivity.setEventAlarms(response);
-            }
-
-            @Override
-            public void onFailure(int statusCode, Header[] headers, Throwable throwable, JSONObject errorResponse) {
-                super.onFailure(statusCode, headers, throwable, errorResponse);
-                HomeActivity homeActivity = HomeActivity.this;
-                homeActivity.setErrorText("Unable to fetch data from server.");
-            }
-        };
-        apiUtils.getEvents(jhtrh);
+        this.getUserData();
 
 
         Bundle args = new Bundle();
@@ -78,9 +64,6 @@ public class HomeActivity extends AppCompatActivity {
         FragmentTransaction t = getSupportFragmentManager().beginTransaction();
         t.replace(R.id.calendarView, caldroidFragment);
         t.commit();
-
-
-
 
         caldroidFragment.setCaldroidListener(listener);
     }
@@ -107,13 +90,22 @@ public class HomeActivity extends AppCompatActivity {
             case R.id.settings:
                 gotoSettingsActivity();
                 return true;
+            case R.id.logout:
+                logoutUser();
+                return true;
             default:
                 return super.onOptionsItemSelected(item);
         }
     }
 
+    private void logoutUser() {
+        currentUser.setDataToSharedPreferences("email", "");
+        currentUser.setDataToSharedPreferences("access_token", "");
 
-
+        Intent i = new Intent(HomeActivity.this, MainActivity.class);
+        finish();
+        startActivity(i);
+    }
 
 
     private void gotoSettingsActivity() {
@@ -138,26 +130,6 @@ public class HomeActivity extends AppCompatActivity {
             homeActivity.setErrorText("No data to show.");
         }
 
-    }
-
-    public void addNewEvent(View view) {
-        JsonHttpResponseHandler jhrh = new JsonHttpResponseHandler(){
-            @Override
-            public void onSuccess(int statusCode, Header[] headers, JSONArray response) {
-                System.out.println(response);
-                HomeActivity.priestUsers = response;
-                Intent intent = new Intent(HomeActivity.this, AddNewEventActivity.class);
-                intent.putExtra("priest_users", HomeActivity.priestUsers.toString());
-                startActivity(intent);
-            }
-
-            @Override
-            public void onFailure(int statusCode, Header[] headers, Throwable throwable, JSONObject errorResponse) {
-                HomeActivity homeActivity = HomeActivity.this;
-                homeActivity.setErrorText("Unable to fetch priest data from server.");
-            }
-        };
-        apiUtils.getPriestUsers(jhrh);
     }
 
 
@@ -200,13 +172,16 @@ public class HomeActivity extends AppCompatActivity {
                     caldroidFragment.refreshView();
 
 
-                    Intent intent = new Intent(this, AlarmReceiver.class);
-                    intent.putExtra("event_id", thisObj.getInt("id"));
-                    PendingIntent pi = PendingIntent.getBroadcast(this, thisObj.getInt("id"), intent,  thisObj.getInt("id"));
-                    am.cancel(pi);
-                    am.set(AlarmManager.RTC_WAKEUP, cal.getTimeInMillis(), pi);
+                    if (System.currentTimeMillis() < eventAlarmDate.getTime()) {
+                        Intent intent = new Intent(this, AlarmReceiver.class);
+                        intent.putExtra("event", thisObj.toString());
+                        PendingIntent pi = PendingIntent.getBroadcast(this, thisObj.getInt("id"), intent, thisObj.getInt("id"));
+                        am.cancel(pi);
+                        am.set(AlarmManager.RTC_WAKEUP, cal.getTimeInMillis(), pi);
+                        intentArray.add(pi);
+                    }
 
-                    intentArray.add(pi);
+
 
                 } catch (ParseException e) {
 
@@ -224,27 +199,132 @@ public class HomeActivity extends AppCompatActivity {
         public void onSelectDate(Date date, View view) {
             SimpleDateFormat formatter = new SimpleDateFormat("yyyy-MM-dd");
             String eventDate = formatter.format(date);
-            Toast.makeText(getApplicationContext(), formatter.format(date),
-                    Toast.LENGTH_SHORT).show();
 
-            JsonHttpResponseHandler jhrh = new JsonHttpResponseHandler(){
-                @Override
-                public void onSuccess(int statusCode, Header[] headers, JSONObject response) {
-                    System.out.println(response);
-                    Intent intent = new Intent(HomeActivity.this, EventActivity.class);
-                    intent.putExtra("events", response.toString());
-                    startActivity(intent);
+            try {
+                JSONArray eventArr = HomeActivity.response.getJSONArray("events");
+                ArrayList<JSONObject> eventsOnDate = new ArrayList<>();
+                for(int i=0;i<eventArr.length();i++){
+                    String timeStart = eventArr.getJSONObject(i).getString("time_start");
+                    Date timeStartDate = formatter.parse(timeStart);
+                    timeStart = formatter.format(timeStartDate);
+
+                    if (eventDate.equals(timeStart)){
+                        JSONObject eventObject = eventArr.getJSONObject(i);
+                        if (eventObject != null) {
+                            eventsOnDate.add(eventObject);
+                        }
+                    }
                 }
 
-                @Override
-                public void onFailure(int statusCode, Header[] headers, Throwable throwable, JSONObject errorResponse) {
-                    HomeActivity homeActivity = HomeActivity.this;
-                    homeActivity.setErrorText("Unable to fetch data from server.");
-                }
-            };
-            apiUtils.getEventsFromDate(eventDate, jhrh);
+                System.out.println(eventsOnDate);
+
+                JSONArray eventJSONArray = new JSONArray(eventsOnDate);
+                JSONObject newEventJsonObject = new JSONObject();
+                newEventJsonObject.put("events", eventJSONArray);
+
+                Intent intent = new Intent(HomeActivity.this, EventActivity.class);
+                intent.putExtra("events", newEventJsonObject.toString());
+                startActivity(intent);
+            } catch (JSONException e) {
+                e.printStackTrace();
+            } catch (ParseException e) {
+                e.printStackTrace();
+            }
+
+
+
+
         }
     };
 
 
+    public void viewGroups(View view) {
+        Intent intent = new Intent(HomeActivity.this, GroupActivity.class);
+        startActivity(intent);
+    }
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+        this.getEventData();
+    }
+
+    public void getEventData(){
+        String userId = currentUser.getUserId();
+        JsonHttpResponseHandler jhtrh = new JsonHttpResponseHandler() {
+            @Override
+            public void onSuccess(int statusCode, Header[] headers, JSONObject response) {
+                System.out.println(response);
+                HomeActivity.response = response;
+                HomeActivity homeActivity = HomeActivity.this;
+                homeActivity.setEventAlarms(response);
+                try {
+                    if (!showUnconfirmedEvents){
+                        showUnconfirmedEvents = true;
+                        homeActivity.showUnconfirmedEvents(response.getJSONArray("events"));
+                    }
+
+                } catch (JSONException e) {
+                    e.printStackTrace();
+                }
+            }
+
+            @Override
+            public void onFailure(int statusCode, Header[] headers, Throwable throwable, JSONObject errorResponse) {
+                super.onFailure(statusCode, headers, throwable, errorResponse);
+                HomeActivity homeActivity = HomeActivity.this;
+                homeActivity.setErrorText("Unable to fetch data from server.");
+            }
+        };
+        apiUtils.getUserEvents(userId, jhtrh);
+    }
+
+
+    public void getUserData(){
+        String email = "";
+        email = currentUser.getEmail();
+        JsonHttpResponseHandler jhtrh = new JsonHttpResponseHandler() {
+            @Override
+            public void onSuccess(int statusCode, Header[] headers, JSONObject response) {
+                System.out.println(response);
+                try {
+                    currentUser.setDataToSharedPreferences("user_id", response.getString("id"));
+                    HomeActivity.this.getEventData();
+                } catch (JSONException e) {
+                    e.printStackTrace();
+                }
+            }
+
+            @Override
+            public void onFailure(int statusCode, Header[] headers, Throwable throwable, JSONObject errorResponse) {
+                super.onFailure(statusCode, headers, throwable, errorResponse);
+
+            }
+        };
+        apiUtils.getUserDetails(email, jhtrh);
+    }
+
+    public void showUnconfirmedEvents(JSONArray events){
+        for (int i=0; i < events.length(); i++) {
+            JSONObject thisObj = new JSONObject();
+            try {
+                thisObj = events.getJSONObject(i);
+            } catch (JSONException e) {
+                e.printStackTrace();
+            }
+
+            try {
+                String currentUserId = currentUser.getUserId();
+                String eventUserId = thisObj.getJSONObject("user").getString("id");
+
+                if (thisObj.getInt("is_confirmed") == 0 && currentUserId == eventUserId){
+                  Intent intent = new Intent(HomeActivity.this, ConfirmEventActivity.class);
+                  intent.putExtra("event", thisObj.toString());
+                  startActivity(intent);
+                }
+            } catch (JSONException e) {
+                e.printStackTrace();
+            }
+        }
+    }
 }

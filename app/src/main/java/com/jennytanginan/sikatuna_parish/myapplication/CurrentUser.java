@@ -19,6 +19,10 @@ public class CurrentUser{
         return getDataFromSharedPreferences("email");
     }
 
+    public String getUserId(){
+        return getDataFromSharedPreferences("user_id");
+    }
+
     public String getAccessToken(){
         return getDataFromSharedPreferences("access_token");
     }

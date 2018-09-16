@@ -4,7 +4,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".AddNewEventActivity">
+    tools:context=".EditEventActivity">
 
     <LinearLayout
         android:layout_width="match_parent"
@@ -96,12 +96,12 @@
 
         <Button
             android:id="@+id/submitEvent"
-            android:onClick="submitEventDetails"
+            android:onClick="updateEvent"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:backgroundTint="@color/colorPrimary"
             android:textColor="@color/caldroid_white"
-            android:text="@string/create_event" />
+            android:text="@string/update" />
 
         <Button
             android:id="@+id/clear_fields"

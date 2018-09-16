@@ -15,7 +15,13 @@ import android.view.WindowManager;
 import android.widget.Button;
 import android.widget.TextView;
 
+import org.json.JSONException;
+import org.json.JSONObject;
+
 import java.io.IOException;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
+import java.util.Date;
 
 public class AlarmReceiverActivity extends Activity {
     private MediaPlayer mMediaPlayer;
@@ -31,9 +37,41 @@ public class AlarmReceiverActivity extends Activity {
         Intent intent = getIntent();
 
 
-        TextView eventIdTv = findViewById(R.id.event_name);
-        Integer eventId = intent.getExtras().getInt("event_id");
-        eventIdTv.setText(eventId.toString());
+        TextView eventNameTv = findViewById(R.id.event_name);
+        TextView timeStartTv = findViewById(R.id.time_start);
+        TextView timeEndTv = findViewById(R.id.time_end);
+        TextView priestTv = findViewById(R.id.priest);
+        TextView detailsTv = findViewById(R.id.details);
+
+        String eventStr = intent.getExtras().getString("event");
+        JSONObject event = new JSONObject();
+        try {
+            event = new JSONObject(eventStr);
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
+
+        System.out.println(event);
+        try {
+
+            SimpleDateFormat formatter = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+            Date timeStart = formatter.parse(event.getString("time_start"));
+            Date timeEnd = formatter.parse(event.getString("time_start"));
+
+            formatter = new SimpleDateFormat("EEE, d MMM yyyy hh:mm aaa");
+            String timeStartz = formatter.format(timeStart);
+            String timeEndz = formatter.format(timeEnd);
+
+            eventNameTv.setText(event.getString("name"));
+            timeStartTv.setText(timeStartz);
+            timeEndTv.setText(timeEndz);
+            priestTv.setText(event.getJSONObject("user").getString("name"));
+            detailsTv.setText(event.getString("details"));
+        } catch (JSONException e) {
+            e.printStackTrace();
+        } catch (ParseException e) {
+            e.printStackTrace();
+        }
 
         Button stopAlarm = findViewById(R.id.stopAlarm);
 

@@ -28,7 +28,11 @@
 
         <receiver android:name=".AlarmReceiver" />
 
-        <activity android:name=".AddNewEventActivity"></activity>
+        <activity android:name=".AddNewEventActivity" />
+        <activity android:name=".GroupActivity" />
+        <activity android:name=".AddGroupActivity" />
+        <activity android:name=".EditEventActivity" />
+        <activity android:name=".ConfirmEventActivity"></activity>
     </application>
 
 </manifest>

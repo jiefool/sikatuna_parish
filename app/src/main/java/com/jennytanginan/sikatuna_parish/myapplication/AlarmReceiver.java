@@ -12,9 +12,9 @@ public class AlarmReceiver extends BroadcastReceiver {
         System.out.println("SHOULD ALARM");
         Intent i = new Intent(context, AlarmReceiverActivity.class);
         i.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
-        Integer eventId = intent.getExtras().getInt("event_id");
-        System.out.println(eventId);
-        i.putExtra("event_id", eventId);
+        String event = intent.getExtras().getString("event");
+        System.out.println(event);
+        i.putExtra("event", event);
         context.startActivity(i);
     }
 }

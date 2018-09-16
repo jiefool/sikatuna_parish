@@ -1,9 +1,8 @@
 package com.jennytanginan.sikatuna_parish.myapplication;
 
-import android.annotation.SuppressLint;
 import android.content.Intent;
-import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
+import android.os.Bundle;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
@@ -22,35 +21,37 @@ import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
 
 import cz.msebera.android.httpclient.Header;
 
-@SuppressLint("SimpleDateFormat")
-public class AddNewEventActivity extends AppCompatActivity implements AdapterView.OnItemSelectedListener {
+public class EditEventActivity extends AppCompatActivity implements AdapterView.OnItemSelectedListener {
     private SimpleDateFormat mFormatter = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+    private Boolean isStart = false;
     private Button setDateStart;
     private Button setDateEnd;
-    private Boolean isStart = false;
-    JSONArray priestUsersArr;
-    String userId;
-    ApiUtils apiUtils;
-    TextView createEventResponse;
 
     EditText etName;
     EditText etTimeStart;
     EditText etTimeEnd;
     EditText etAlarm;
     EditText etDetails;
+    ApiUtils apiUtils;
+    JSONArray priestUsersArr;
+    Spinner priestSpinner;
+    String userId;
+    TextView createEventResponse;
+    JSONObject  eventObj;
 
     private SlideDateTimeListener listener = new SlideDateTimeListener() {
 
         @Override
         public void onDateTimeSet(Date date)
         {
-            Toast.makeText(AddNewEventActivity.this, mFormatter.format(date), Toast.LENGTH_SHORT).show();
+            Toast.makeText(EditEventActivity.this, mFormatter.format(date), Toast.LENGTH_SHORT).show();
             if(isStart){
                 EditText startDate = findViewById(R.id.start_datetime);
                 startDate.setText(mFormatter.format(date));
@@ -65,26 +66,32 @@ public class AddNewEventActivity extends AppCompatActivity implements AdapterVie
         @Override
         public void onDateTimeCancel()
         {
-            Toast.makeText(AddNewEventActivity.this,
+            Toast.makeText(EditEventActivity.this,
                     "Canceled", Toast.LENGTH_SHORT).show();
         }
     };
 
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_add_new_event);
+        setContentView(R.layout.activity_edit_event);
+
+        Intent intent = getIntent();
+        String event = intent.getStringExtra("event");
+        apiUtils = new ApiUtils(this);
+
 
         etName = findViewById(R.id.name);
-        etTimeStart = findViewById(R.id.start_datetime);
+        etTimeStart =findViewById(R.id.start_datetime);
         etTimeEnd = findViewById(R.id.end_datetime);
         etAlarm = findViewById(R.id.alarm);
         etDetails = findViewById(R.id.details);
-
+        priestSpinner   = findViewById(R.id.priestSpinner);
         setDateStart =  findViewById(R.id.button_start_datetime);
         setDateEnd =  findViewById(R.id.button_end_datetime);
-        apiUtils = new ApiUtils(this);
         createEventResponse = findViewById(R.id.create_event_response);
+
         setDateStart.setOnClickListener(new View.OnClickListener() {
 
             @Override
@@ -113,30 +120,75 @@ public class AddNewEventActivity extends AppCompatActivity implements AdapterVie
             }
         });
 
-        Intent intent = this.getIntent();
-        String priestUsers = intent.getExtras().getString("priest_users");
 
-        System.out.println(priestUsers);
 
-        ArrayList<String> items = new ArrayList<>();
         try {
-            priestUsersArr = new JSONArray(priestUsers);
-            for (int i=0; i < priestUsersArr.length(); i++) {
-                items.add(priestUsersArr.getJSONObject(i).getString("name"));
-            }
+            eventObj = new JSONObject(event);
+            etName.setText(eventObj.getString("name"));
+            etTimeStart.setText(eventObj.getString("time_start"));
+            etTimeEnd.setText(eventObj.getString("time_end"));
+            etDetails.setText(eventObj.getString("details"));
+
+            SimpleDateFormat formatter = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+            Date timeStart = formatter.parse(eventObj.getString("time_start"));
+            Date alarm = formatter.parse(eventObj.getString("alarm"));
+            long difference = Math.abs(timeStart.getTime() - alarm.getTime());
+            long minutesDiff = difference / (60 * 1000);
+
+            etAlarm.setText(Long.toString(minutesDiff));
+
+
         } catch (JSONException e) {
+            e.printStackTrace();
+        } catch (ParseException e) {
             e.printStackTrace();
         }
 
-        Spinner priestSpinner = findViewById(R.id.priestSpinner);
-        ArrayAdapter<String> adapter = new ArrayAdapter<>(this, android.R.layout.simple_spinner_dropdown_item, items);
-        priestSpinner.setOnItemSelectedListener(this);
-        priestSpinner.setAdapter(adapter);
+        JsonHttpResponseHandler jhrh = new JsonHttpResponseHandler(){
+            @Override
+            public void onSuccess(int statusCode, Header[] headers, JSONArray response) {
+                priestUsersArr = response;
+                ArrayList<String> items = new ArrayList<>();
+                try {
+                    for (int i = 0; i < response.length(); i++) {
+                        items.add(response.getJSONObject(i).getString("name"));
+                    }
+
+                    final ArrayAdapter<String>  adapter = new ArrayAdapter<>(EditEventActivity.this, android.R.layout.simple_spinner_dropdown_item, items);
+                    priestSpinner.setOnItemSelectedListener(EditEventActivity.this);
+                    priestSpinner.setAdapter(adapter);
+
+
+                } catch (JSONException e) {
+                    e.printStackTrace();
+                }
+
+            }
+
+            @Override
+            public void onFailure(int statusCode, Header[] headers, Throwable throwable, JSONObject errorResponse) {
+
+            }
+        };
+
+        apiUtils.getPriestUsers(jhrh);
+
+
+
+
 
 
     }
 
-    public void submitEventDetails(View view) {
+    public void clearFields(View view) {
+        etName.setText("");
+        etTimeStart.setText("");
+        etTimeEnd.setText("");
+        etAlarm.setText("");
+        etDetails.setText("");
+    }
+
+    public void updateEvent(View view) {
         String name = etName.getText().toString();
         String timeStart = etTimeStart.getText().toString();
         String timeEnd = etTimeEnd.getText().toString();
@@ -154,20 +206,27 @@ public class AddNewEventActivity extends AppCompatActivity implements AdapterVie
         JsonHttpResponseHandler jhrh = new JsonHttpResponseHandler() {
             @Override
             public void onSuccess(int statusCode, Header[] headers, JSONObject response) {
-                createEventResponse.setText("Event created successfully.");
-                Intent intent = new Intent(AddNewEventActivity.this, EventActivity.class);
+                Intent intent = new Intent(EditEventActivity.this, EventActivity.class);
                 finish();
                 startActivity(intent);
             }
 
             @Override
             public void onFailure(int statusCode, Header[] headers, Throwable throwable, JSONObject jsonObject){
-                createEventResponse.setText("Failed to create event.");
+                createEventResponse.setText("Failed to update event.");
             }
 
         };
 
-        apiUtils.createEvent(params, jhrh);
+        String eventId = "";
+        try {
+            eventId = eventObj.getString("id");
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
+
+        apiUtils.updateEvent(eventId, params, jhrh);
+
     }
 
     @Override
@@ -182,13 +241,5 @@ public class AddNewEventActivity extends AppCompatActivity implements AdapterVie
     @Override
     public void onNothingSelected(AdapterView<?> adapterView) {
 
-    }
-
-    public void clearFields(View view) {
-        etName.setText("");
-        etTimeStart.setText("");
-        etTimeEnd.setText("");
-        etAlarm.setText("");
-        etDetails.setText("");
     }
 }

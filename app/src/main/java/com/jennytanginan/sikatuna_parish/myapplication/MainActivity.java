@@ -47,35 +47,29 @@ public class MainActivity extends AppCompatActivity implements View.OnFocusChang
         final String userPasswordStr = userPassword.getText().toString();
 
 
-//        final MainActivity mainActivity = this;
-//
-//        JsonHttpResponseHandler jhrh= new JsonHttpResponseHandler() {
-//            @Override
-//            public void onSuccess(int statusCode, Header[] headers, JSONObject response) {
-//                try {
-//                    String accessToken = (String) response.get("access_token");
-//                    currentUser.setDataToSharedPreferences("email", userNameStr);
-//                    currentUser.setDataToSharedPreferences("access_token", accessToken);
-//                    mainActivity.gotoHomeActivity();
-//                } catch (JSONException e) {
-//                    e.printStackTrace();
-//                }
-//            }
-//
-//            @Override
-//            public void onFailure(int statusCode, Header[] headers, Throwable throwable, JSONObject errorResponse) {
-//                super.onFailure(statusCode, headers, throwable, errorResponse);
-//                mainActivity.setErrorText("Unable to login.");
-//            }
-//        };
-//
-//        apiUtils.loginUser(userNameStr, userPasswordStr, jhrh, "");
+        final MainActivity mainActivity = this;
 
-        if (userNameStr.equals("jenny") && userPasswordStr.equals("jenny123")){
-            MainActivity.this.gotoHomeActivity();
-        }else{
-            MainActivity.this.setErrorText("Unable to login with those credentials.");
-        }
+        JsonHttpResponseHandler jhrh= new JsonHttpResponseHandler() {
+            @Override
+            public void onSuccess(int statusCode, Header[] headers, JSONObject response) {
+                try {
+                    String accessToken = (String) response.get("access_token");
+                    currentUser.setDataToSharedPreferences("email", userNameStr);
+                    currentUser.setDataToSharedPreferences("access_token", accessToken);
+                    mainActivity.gotoHomeActivity();
+                } catch (JSONException e) {
+                    e.printStackTrace();
+                }
+            }
+
+            @Override
+            public void onFailure(int statusCode, Header[] headers, Throwable throwable, JSONObject errorResponse) {
+                System.out.println(errorResponse);
+                mainActivity.setErrorText("Unable to login.");
+            }
+        };
+
+        apiUtils.loginUser(userNameStr, userPasswordStr, jhrh, "");
 
     }
 
