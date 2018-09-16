@@ -6,6 +6,8 @@ import android.os.Bundle;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.view.View;
+import android.widget.Button;
+import android.widget.LinearLayout;
 import android.widget.Spinner;
 import android.widget.TextView;
 
@@ -24,7 +26,8 @@ public class GroupActivity extends AppCompatActivity implements GroupAdapter.Ite
     GroupAdapter adapter;
     RecyclerView groupList;
     ApiUtils apiUtils;
-
+    CurrentUser currentUser;
+    LinearLayout groupAction;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -61,6 +64,14 @@ public class GroupActivity extends AppCompatActivity implements GroupAdapter.Ite
             }
         };
 
+        currentUser = new CurrentUser(this);
+        String type = currentUser.getType();
+        System.out.println("type: "+type);
+        groupAction = findViewById(R.id.group_action);
+        if (type.equals("priest")){
+            groupAction.setVisibility(View.GONE);
+        }
+
         apiUtils.getGroups(jhrh);
 
     }
@@ -79,5 +90,10 @@ public class GroupActivity extends AppCompatActivity implements GroupAdapter.Ite
     @Override
     public void onItemClick(View view, int position) {
 
+    }
+
+    public void setErrorText(String s){
+        TextView errorTextView = findViewById(R.id.error_text);
+        errorTextView.setText(s);
     }
 }
