@@ -32,7 +32,8 @@
         <activity android:name=".GroupActivity" />
         <activity android:name=".AddGroupActivity" />
         <activity android:name=".EditEventActivity" />
-        <activity android:name=".ConfirmEventActivity"></activity>
+        <activity android:name=".ConfirmEventActivity" />
+        <activity android:name=".SettingsActivity"></activity>
     </application>
 
 </manifest>

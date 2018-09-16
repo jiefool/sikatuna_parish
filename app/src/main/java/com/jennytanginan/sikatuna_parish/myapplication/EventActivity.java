@@ -13,6 +13,7 @@ import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.util.Log;
 import android.view.View;
+import android.widget.Button;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -44,6 +45,8 @@ public class EventActivity extends AppCompatActivity implements MyAdapter.ItemCl
     JSONArray priestUsers;
     String events = "";
     ArrayList<JSONObject> eventObjectList;
+    CurrentUser currentUser;
+    Button addEvent;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -59,6 +62,14 @@ public class EventActivity extends AppCompatActivity implements MyAdapter.ItemCl
             this.getEvents();
         }else{
             populateEventList();
+        }
+
+        currentUser = new CurrentUser(this);
+        String type = currentUser.getType();
+        System.out.println("type: "+type);
+        addEvent = findViewById(R.id.add_new_event);
+        if (type.equals("priest")){
+            addEvent.setVisibility(View.GONE);
         }
 
 
@@ -172,7 +183,7 @@ public class EventActivity extends AppCompatActivity implements MyAdapter.ItemCl
             System.out.println(file);
 
             //Write to file
-            try (FileWriter fileWriter = new FileWriter(file, )) {
+            try (FileWriter fileWriter = new FileWriter(file, true)) {
                 fileWriter.write(data);
                 fileWriter.flush();
                 fileWriter.close();

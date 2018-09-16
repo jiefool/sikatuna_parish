@@ -17,19 +17,32 @@
             android:id="@+id/group_list"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            android:layout_weight=".99">
+            android:layout_weight="1">
 
         </android.support.v7.widget.RecyclerView>
 
-        <Button
-            android:id="@+id/add_group"
+        <LinearLayout
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:backgroundTint="@color/colorPrimary"
-            android:textColor="@color/caldroid_white"
-            android:onClick="gotoAddNewGroupActvity"
-            android:layout_weight=".01"
-            android:text="@string/add_new_group"
-            android:visibility="visible" />
+            android:layout_height="70dp"
+            android:id="@+id/group_action"
+            android:orientation="vertical">
+
+            <Button
+                android:id="@+id/add_group"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:backgroundTint="@color/colorPrimary"
+                android:onClick="gotoAddNewGroupActvity"
+                android:text="@string/add_new_group"
+                android:textColor="@color/caldroid_white"
+                android:visibility="visible" />
+
+            <TextView
+                android:id="@+id/error_text"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="" />
+        </LinearLayout>
+
     </LinearLayout>
 </android.support.constraint.ConstraintLayout>

@@ -103,13 +103,13 @@ public class HomeActivity extends AppCompatActivity {
         currentUser.setDataToSharedPreferences("access_token", "");
 
         Intent i = new Intent(HomeActivity.this, MainActivity.class);
-        finish();
         startActivity(i);
     }
 
 
     private void gotoSettingsActivity() {
-
+        Intent intent = new Intent(this, SettingsActivity.class);
+        startActivity(intent);
     }
 
 
@@ -281,14 +281,19 @@ public class HomeActivity extends AppCompatActivity {
 
 
     public void getUserData(){
-        String email = "";
+        String email;
         email = currentUser.getEmail();
         JsonHttpResponseHandler jhtrh = new JsonHttpResponseHandler() {
             @Override
             public void onSuccess(int statusCode, Header[] headers, JSONObject response) {
+                System.out.println("USER DATA");
                 System.out.println(response);
                 try {
                     currentUser.setDataToSharedPreferences("user_id", response.getString("id"));
+                    currentUser.setDataToSharedPreferences("name", response.getString("name"));
+                    currentUser.setDataToSharedPreferences("username", response.getString("username"));
+                    currentUser.setDataToSharedPreferences("email", response.getString("email"));
+                    currentUser.setDataToSharedPreferences("type", response.getString("type"));
                     HomeActivity.this.getEventData();
                 } catch (JSONException e) {
                     e.printStackTrace();

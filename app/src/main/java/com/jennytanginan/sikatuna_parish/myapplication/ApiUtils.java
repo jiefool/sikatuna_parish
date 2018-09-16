@@ -37,6 +37,11 @@ public class ApiUtils {
         HttpUtils.get(url, params, jhrh, accessToken);
     }
 
+    public void updateUser(String userId, RequestParams params, JsonHttpResponseHandler jhrh){
+        String url = "user/"+userId+"/update";
+        HttpUtils.post(url, params, jhrh, accessToken);
+    }
+
     public void getPriestUsers(JsonHttpResponseHandler jhrh){
         String url = "users/priest";
         RequestParams params = new RequestParams();
@@ -85,6 +90,12 @@ public class ApiUtils {
 
     public void createGroup(RequestParams params, JsonHttpResponseHandler jhrh){
         String url = "groups/store";
+        HttpUtils.post(url, params,jhrh, accessToken);
+    }
+
+    public void deleteGroup(String groupId, JsonHttpResponseHandler jhrh){
+        String url = "groups/"+groupId+"/delete";
+        RequestParams params = new RequestParams();
         HttpUtils.post(url, params,jhrh, accessToken);
     }
 
