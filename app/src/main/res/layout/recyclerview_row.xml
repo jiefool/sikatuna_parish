@@ -34,6 +34,7 @@
                 android:id="@+id/save_event_to_docs"
                 android:backgroundTint="@color/colorSave"
                 android:layout_width="match_parent"
+                android:textColor="@color/caldroid_white"
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
                 android:text="@string/save_to_docs" />
@@ -154,13 +155,15 @@
                     android:id="@+id/edit_event_btn"
                     android:backgroundTint="@color/colorEdit"
                     android:layout_width="match_parent"
+                    android:textColor="@color/caldroid_white"
                     android:layout_height="wrap_content"
                     android:text="@string/edit" />
 
                 <Button
                     android:id="@+id/delete_event_btn"
                     android:layout_width="match_parent"
-                    android:backgroundTint="@color/caldroid_light_red"
+                    android:textColor="@color/caldroid_white"
+                    android:backgroundTint="@color/colorDelete"
                     android:layout_height="wrap_content"
                     android:text="@string/delete" />
 
