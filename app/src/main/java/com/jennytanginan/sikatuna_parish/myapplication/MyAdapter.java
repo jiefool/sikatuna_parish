@@ -3,6 +3,7 @@ package com.jennytanginan.sikatuna_parish.myapplication;
 import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
+import android.os.Environment;
 import android.support.v7.widget.RecyclerView;
 import android.util.EventLog;
 import android.view.LayoutInflater;
@@ -10,14 +11,19 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.loopj.android.http.JsonHttpResponseHandler;
 
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import java.io.File;
+import java.io.FileWriter;
+import java.io.IOException;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
+import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
 
@@ -28,6 +34,7 @@ public class MyAdapter extends RecyclerView.Adapter<MyAdapter.ViewHolder> {
     private LayoutInflater mInflater;
     private ItemClickListener mClickListener;
     public Context context;
+    public EventActivity eventActivity;
     ApiUtils apiUtils;
 
     // data is passed into the constructor
@@ -36,6 +43,7 @@ public class MyAdapter extends RecyclerView.Adapter<MyAdapter.ViewHolder> {
         this.mData = data;
         this.context = context;
         this.apiUtils = new ApiUtils(context);
+        this.eventActivity = (EventActivity) context;
     }
 
     // inflates the row layout from xml when needed
@@ -49,6 +57,7 @@ public class MyAdapter extends RecyclerView.Adapter<MyAdapter.ViewHolder> {
     @Override
     public void onBindViewHolder(ViewHolder holder, int position) {
         final JSONObject event = mData.get(position);
+
 
         try {
             holder.eventName.setText(event.getString("name"));
@@ -105,6 +114,58 @@ public class MyAdapter extends RecyclerView.Adapter<MyAdapter.ViewHolder> {
                     context.startActivity(intent);
                 }
             });
+
+            holder.saveEventToDoc.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View view) {
+                    Boolean isWritable = eventActivity.isExternalStorageWritable();
+                    String fileName = "";
+
+                    if (isWritable) {
+                        String data = "";
+                        try {
+                            fileName =  event.getString("name") + "_event.txt";
+                            data += event.getString("name");
+                            data += "\n";
+                            data += event.getString("time_start");
+                            data += "\n";
+                            data += event.getString("time_end");
+                            data += "\n";
+                            data += event.getJSONObject("user").getString("name");
+                            data += "\n";
+                            data += event.getString("details");
+                        } catch (JSONException e) {
+                            e.printStackTrace();
+                        }
+                        data += "\n";
+                            data += "======================================";
+                            data += "\n";
+
+
+
+                        File dir = eventActivity.getPublicDocumentStorageDir("/SikatunaParishEvents");
+                        File file = new File(dir, fileName);
+
+                        //Write to file
+                        try (FileWriter fileWriter = new FileWriter(file, true)) {
+                            fileWriter.write(data);
+                            fileWriter.flush();
+                            fileWriter.close();
+                        } catch (IOException e) {
+                            //Handle exception
+                        }
+
+                        eventActivity.scanMedia(file.getPath(), context);
+
+                        Context context = eventActivity.getApplicationContext();
+                        int duration = Toast.LENGTH_SHORT;
+
+                        Toast toast = Toast.makeText(context, "Data saved to "+file.toString(), duration);
+                        toast.show();
+
+                    }
+                }
+            });
         } catch (JSONException e) {
             e.printStackTrace();
         } catch (ParseException e) {
@@ -127,6 +188,7 @@ public class MyAdapter extends RecyclerView.Adapter<MyAdapter.ViewHolder> {
         TextView details;
         Button editBtn;
         Button deleteBtn;
+        Button saveEventToDoc;
 
         ViewHolder(View itemView) {
             super(itemView);
@@ -136,6 +198,7 @@ public class MyAdapter extends RecyclerView.Adapter<MyAdapter.ViewHolder> {
             priest = itemView.findViewById(R.id.priest);
             details = itemView.findViewById(R.id.details);
 
+            saveEventToDoc = itemView.findViewById(R.id.save_event_to_docs);
             editBtn = itemView.findViewById(R.id.edit_event_btn);
             deleteBtn = itemView.findViewById(R.id.delete_event_btn);
 

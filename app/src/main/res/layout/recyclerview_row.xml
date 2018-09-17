@@ -14,15 +14,30 @@
         android:backgroundTintMode="@color/caldroid_holo_blue_light"
         android:orientation="vertical">
 
-        <TextView
-            android:id="@+id/event_name"
+        <LinearLayout
             android:layout_width="match_parent"
-            android:textColor="@color/colorPrimary"
-            android:layout_height="wrap_content"
-            android:textStyle="bold"
-            android:textAllCaps="true"
-            android:text="Event Name"
-            android:textSize="20sp" />
+            android:layout_height="match_parent"
+            android:orientation="horizontal">
+
+            <TextView
+                android:id="@+id/event_name"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:text="Event Name"
+                android:textAllCaps="true"
+                android:textColor="@color/colorPrimary"
+                android:textSize="20sp"
+                android:textStyle="bold" />
+
+            <Button
+                android:id="@+id/save_event_to_docs"
+                android:backgroundTint="@color/colorSave"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:text="@string/save_to_docs" />
+        </LinearLayout>
 
         <LinearLayout
             android:layout_width="match_parent"
@@ -137,6 +152,7 @@
 
                 <Button
                     android:id="@+id/edit_event_btn"
+                    android:backgroundTint="@color/colorEdit"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:text="@string/edit" />
@@ -144,8 +160,10 @@
                 <Button
                     android:id="@+id/delete_event_btn"
                     android:layout_width="match_parent"
+                    android:backgroundTint="@color/caldroid_light_red"
                     android:layout_height="wrap_content"
                     android:text="@string/delete" />
+
             </LinearLayout>
 
         </LinearLayout>

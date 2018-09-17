@@ -154,53 +154,6 @@ public class EventActivity extends AppCompatActivity implements MyAdapter.ItemCl
         recyclerView.setAdapter(adapter);
     }
 
-    public void saveToDocument(View view) throws JSONException, IOException {
-        Boolean isWritable = this.isExternalStorageWritable();
-        Date currentTime = Calendar.getInstance().getTime();
-        String fileName = currentTime.getTime() + "_events.txt";
-
-        if (isWritable) {
-
-
-            String data = "";
-            for (int i = 0; i < eventObjectList.size(); i++) {
-                data += eventObjectList.get(i).getString("name");
-                data += "\n";
-                data += eventObjectList.get(i).getString("time_start");
-                data += "\n";
-                data += eventObjectList.get(i).getString("time_end");
-                data += "\n";
-                data += eventObjectList.get(i).getJSONObject("user").getString("name");
-                data += "\n";
-                data += eventObjectList.get(i).getString("details");
-                data += "\n";
-                data += "======================================";
-                data += "\n";
-            }
-
-
-            File dir = getPublicDocumentStorageDir("/SikatunaParishEvents");
-            File file = new File(dir, fileName);
-
-            //Write to file
-            try (FileWriter fileWriter = new FileWriter(file, true)) {
-                fileWriter.write(data);
-                fileWriter.flush();
-                fileWriter.close();
-            } catch (IOException e) {
-                //Handle exception
-            }
-
-            scanMedia(file.getPath());
-
-            Context context = getApplicationContext();
-            int duration = Toast.LENGTH_SHORT;
-
-            Toast toast = Toast.makeText(context, "Data saved to "+file.toString(), duration);
-            toast.show();
-
-        }
-    }
     public boolean isExternalStorageWritable() {
         String state = Environment.getExternalStorageState();
         if (Environment.MEDIA_MOUNTED.equals(state)) {
@@ -209,12 +162,11 @@ public class EventActivity extends AppCompatActivity implements MyAdapter.ItemCl
         return false;
     }
 
-    private void scanMedia(String path) {
+    public void scanMedia(String path, Context context) {
         File file = new File(path);
         Uri uri = Uri.fromFile(file);
-        Intent scanFileIntent = new Intent(
-                Intent.ACTION_MEDIA_SCANNER_SCAN_FILE, uri);
-        sendBroadcast(scanFileIntent);
+        Intent scanFileIntent = new Intent(Intent.ACTION_MEDIA_SCANNER_SCAN_FILE, uri);
+        context.sendBroadcast(scanFileIntent);
     }
 
     public File getPublicDocumentStorageDir(String dirName) {
