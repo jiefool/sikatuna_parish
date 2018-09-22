@@ -39,6 +39,10 @@ public class CurrentUser{
         return getDataFromSharedPreferences("access_token");
     }
 
+    public String getUserPhoto(){
+        return getDataFromSharedPreferences("photo");
+    }
+
     private String getDataFromSharedPreferences(String dataField){
         if (sharedpreferences.contains(dataField)) {
             return sharedpreferences.getString(dataField, "");

@@ -1,9 +1,15 @@
 package com.jennytanginan.sikatuna_parish.myapplication;
 
+import android.content.Intent;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
+import android.net.Uri;
+import android.os.AsyncTask;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.EditText;
+import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.loopj.android.http.JsonHttpResponseHandler;
@@ -11,6 +17,12 @@ import com.loopj.android.http.RequestParams;
 
 import org.json.JSONException;
 import org.json.JSONObject;
+
+import java.io.BufferedInputStream;
+import java.io.IOException;
+import java.io.InputStream;
+import java.net.URL;
+import java.net.URLConnection;
 
 import cz.msebera.android.httpclient.Header;
 
@@ -26,6 +38,7 @@ public class SettingsActivity extends AppCompatActivity {
     EditText currentPassword;
     EditText newPassword;
     EditText confirmPassword;
+    ImageView userPhoto;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -41,10 +54,18 @@ public class SettingsActivity extends AppCompatActivity {
         currentPassword = findViewById(R.id.current_password_input);
         newPassword = findViewById(R.id.new_password_input);
         confirmPassword = findViewById(R.id.confirm_password_input);
+        userPhoto = findViewById(R.id.user_photo);
 
         name.setText(currentUser.getName());
         username.setText(currentUser.getUsername());
         email.setText(currentUser.getEmail());
+
+        String photoUrl = "http://spc.bagollabs.com/images/"+currentUser.getUserPhoto();
+
+
+        // show The Image in a ImageView
+        new DownloadImageTask((ImageView) findViewById(R.id.user_photo))
+                .execute(photoUrl);
 
     }
 
@@ -98,4 +119,32 @@ public class SettingsActivity extends AppCompatActivity {
         apiUtils.updateUser(userId, params, jhrh);
 
     }
+
+    private class DownloadImageTask extends AsyncTask<String, Void, Bitmap> {
+        ImageView bmImage;
+
+        public DownloadImageTask(ImageView bmImage) {
+            this.bmImage = bmImage;
+        }
+
+        protected Bitmap doInBackground(String... urls) {
+            String urldisplay = urls[0];
+            Bitmap mIcon11 = null;
+            try {
+                InputStream in = new java.net.URL(urldisplay).openStream();
+                mIcon11 = BitmapFactory.decodeStream(in);
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+            return mIcon11;
+        }
+
+        protected void onPostExecute(Bitmap result) {
+            bmImage.setImageBitmap(result);
+        }
+    }
+
+
+
+
 }
