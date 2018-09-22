@@ -19,6 +19,7 @@ public class SplashActivity extends Activity {
                     e.printStackTrace();
                 } finally {
                     Intent openClass = new Intent(SplashActivity.this, MainActivity.class);
+                    finish();
                     startActivity(openClass);
                 }
             }
