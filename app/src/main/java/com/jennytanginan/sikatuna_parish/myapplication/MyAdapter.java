@@ -1,11 +1,12 @@
 package com.jennytanginan.sikatuna_parish.myapplication;
 
 import android.app.Activity;
+import android.app.DialogFragment;
+import android.app.Fragment;
+import android.app.FragmentTransaction;
 import android.content.Context;
 import android.content.Intent;
-import android.os.Environment;
 import android.support.v7.widget.RecyclerView;
-import android.util.EventLog;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -23,7 +24,6 @@ import java.io.FileWriter;
 import java.io.IOException;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
-import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
 
@@ -35,6 +35,9 @@ public class MyAdapter extends RecyclerView.Adapter<MyAdapter.ViewHolder> {
     private ItemClickListener mClickListener;
     public Context context;
     public EventActivity eventActivity;
+    String fileName;
+    DialogFragment dialogFragment;
+    View frag;
     ApiUtils apiUtils;
 
     // data is passed into the constructor
@@ -118,52 +121,19 @@ public class MyAdapter extends RecyclerView.Adapter<MyAdapter.ViewHolder> {
             holder.saveEventToDoc.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View view) {
-                    Boolean isWritable = eventActivity.isExternalStorageWritable();
-                    String fileName = "";
 
-                    if (isWritable) {
-                        String data = "";
-                        try {
-                            fileName =  event.getString("name") + "_event.txt";
-                            data += event.getString("name");
-                            data += "\n";
-                            data += event.getString("time_start");
-                            data += "\n";
-                            data += event.getString("time_end");
-                            data += "\n";
-                            data += event.getJSONObject("user").getString("name");
-                            data += "\n";
-                            data += event.getString("details");
-                        } catch (JSONException e) {
-                            e.printStackTrace();
-                        }
-                        data += "\n";
-                            data += "======================================";
-                            data += "\n";
-
-
-
-                        File dir = eventActivity.getPublicDocumentStorageDir("/SikatunaParishEvents");
-                        File file = new File(dir, fileName);
-
-                        //Write to file
-                        try (FileWriter fileWriter = new FileWriter(file, true)) {
-                            fileWriter.write(data);
-                            fileWriter.flush();
-                            fileWriter.close();
-                        } catch (IOException e) {
-                            //Handle exception
-                        }
-
-                        eventActivity.scanMedia(file.getPath(), context);
-
-                        Context context = eventActivity.getApplicationContext();
-                        int duration = Toast.LENGTH_SHORT;
-
-                        Toast toast = Toast.makeText(context, "Data saved to "+file.toString(), duration);
-                        toast.show();
-
+                    FragmentTransaction ft = ((Activity) context).getFragmentManager().beginTransaction();
+                    Fragment prev = ((Activity) context).getFragmentManager().findFragmentByTag("dialog");
+                    if (prev != null) {
+                        ft.remove(prev);
                     }
+                    ft.addToBackStack(null);
+                    try {
+                        dialogFragment = SaveEventFragment.newInstance(event, eventActivity);
+                    } catch (JSONException e) {
+                        e.printStackTrace();
+                    }
+                    dialogFragment.show(ft, "dialog");
                 }
             });
         } catch (JSONException e) {

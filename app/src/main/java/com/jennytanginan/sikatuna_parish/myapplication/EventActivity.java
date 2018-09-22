@@ -1,5 +1,6 @@
 package com.jennytanginan.sikatuna_parish.myapplication;
 
+import android.app.DialogFragment;
 import android.content.Context;
 import android.content.Intent;
 import android.media.Ringtone;
@@ -12,7 +13,9 @@ import android.os.Bundle;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.util.Log;
+import android.view.LayoutInflater;
 import android.view.View;
+import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -51,6 +54,8 @@ public class EventActivity extends AppCompatActivity implements MyAdapter.ItemCl
     ArrayList<JSONObject> eventObjectList;
     CurrentUser currentUser;
     Button addEvent;
+    String fileNameStr;
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -178,4 +183,12 @@ public class EventActivity extends AppCompatActivity implements MyAdapter.ItemCl
         }
         return file;
     }
+
+    public void closeFragment(View v) {
+
+    }
+
+
+
 }
+
