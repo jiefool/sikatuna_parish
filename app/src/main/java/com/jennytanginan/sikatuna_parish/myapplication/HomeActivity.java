@@ -293,6 +293,7 @@ public class HomeActivity extends AppCompatActivity {
                     currentUser.setDataToSharedPreferences("name", response.getString("name"));
                     currentUser.setDataToSharedPreferences("username", response.getString("username"));
                     currentUser.setDataToSharedPreferences("email", response.getString("email"));
+                    currentUser.setDataToSharedPreferences("photo", response.getString("photo"));
                     currentUser.setDataToSharedPreferences("type", response.getString("type"));
                     HomeActivity.this.getEventData();
                 } catch (JSONException e) {

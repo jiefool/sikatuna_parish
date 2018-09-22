@@ -29,16 +29,6 @@
             android:text="" />
 
         <Button
-            android:id="@+id/saveToText"
-            android:onClick="saveToDocument"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_weight=".01"
-            android:backgroundTint="@color/colorPrimary"
-            android:textColor="@color/caldroid_white"
-            android:text="@string/save_to_docs" />
-
-        <Button
             android:id="@+id/add_new_event"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
