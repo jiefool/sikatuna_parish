@@ -155,17 +155,13 @@
                     android:id="@+id/edit_event_btn"
                     android:backgroundTint="@color/colorEdit"
                     android:layout_width="match_parent"
-                    android:textColor="@color/caldroid_white"
                     android:layout_height="wrap_content"
-                    android:backgroundTint="@color/caldroid_light_red"
                     android:textColor="@color/caldroid_white"
                     android:text="@string/edit" />
 
                 <Button
                     android:id="@+id/delete_event_btn"
                     android:layout_width="match_parent"
-                    android:textColor="@color/caldroid_white"
-                    android:backgroundTint="@color/colorDelete"
                     android:layout_height="wrap_content"
                     android:backgroundTint="@color/caldroid_light_red"
                     android:textColor="@color/caldroid_white"
