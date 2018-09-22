@@ -139,12 +139,16 @@
                     android:id="@+id/edit_event_btn"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
+                    android:backgroundTint="@color/caldroid_light_red"
+                    android:textColor="@color/caldroid_white"
                     android:text="@string/edit" />
 
                 <Button
                     android:id="@+id/delete_event_btn"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
+                    android:backgroundTint="@color/caldroid_light_red"
+                    android:textColor="@color/caldroid_white"
                     android:text="@string/delete" />
             </LinearLayout>
 
