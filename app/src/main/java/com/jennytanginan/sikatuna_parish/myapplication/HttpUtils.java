@@ -2,7 +2,7 @@ package com.jennytanginan.sikatuna_parish.myapplication;
 import com.loopj.android.http.*;
 
 public class HttpUtils {
-    private static final String BASE_URL = "http://spc.bagollabs.com/";
+    private static final String BASE_URL = "http://tanginan.com/";
 
     private static AsyncHttpClient client = new AsyncHttpClient();
 

@@ -60,7 +60,7 @@ public class SettingsActivity extends AppCompatActivity {
         username.setText(currentUser.getUsername());
         email.setText(currentUser.getEmail());
 
-        String photoUrl = "http://spc.bagollabs.com/images/"+currentUser.getUserPhoto();
+        String photoUrl = "http://tanginan.com/images/"+currentUser.getUserPhoto();
 
 
         // show The Image in a ImageView
