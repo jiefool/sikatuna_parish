@@ -54,7 +54,6 @@ public class EventActivity extends AppCompatActivity implements MyAdapter.ItemCl
     ArrayList<JSONObject> eventObjectList;
     CurrentUser currentUser;
     Button addEvent;
-    String fileNameStr;
 
 
     @Override
@@ -77,11 +76,6 @@ public class EventActivity extends AppCompatActivity implements MyAdapter.ItemCl
         String type = currentUser.getType();
         System.out.println("type: "+type);
         addEvent = findViewById(R.id.add_new_event);
-        if (type.equals("priest")){
-            addEvent.setVisibility(View.GONE);
-        }
-
-
 
         JsonHttpResponseHandler jhrh = new JsonHttpResponseHandler(){
             @Override
@@ -183,12 +177,6 @@ public class EventActivity extends AppCompatActivity implements MyAdapter.ItemCl
         }
         return file;
     }
-
-    public void closeFragment(View v) {
-
-    }
-
-
 
 }
 

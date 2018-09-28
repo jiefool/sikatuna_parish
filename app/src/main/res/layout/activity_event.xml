@@ -16,27 +16,26 @@
             android:id="@+id/event_list"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            android:layout_weight=".99">
+            android:layout_weight=".15">
 
         </android.support.v7.widget.RecyclerView>
 
         <TextView
             android:id="@+id/response_text"
-            android:textAlignment="center"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_weight=".01"
-            android:text="" />
+            android:layout_height="match_parent"
+            android:layout_weight="1"
+            android:text=""
+            android:textAlignment="center" />
 
         <Button
             android:id="@+id/add_new_event"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_weight=".01"
+            android:layout_height="match_parent"
+            android:layout_weight=".95"
             android:backgroundTint="@color/colorPrimary"
-            android:textColor="@color/caldroid_white"
             android:onClick="gotoAddNewEventActvity"
             android:text="Add New Event"
-            android:visibility="visible" />
+            android:textColor="@color/caldroid_white" />
     </LinearLayout>
 </android.support.constraint.ConstraintLayout>
