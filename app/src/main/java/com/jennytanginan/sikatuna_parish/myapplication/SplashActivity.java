@@ -17,6 +17,8 @@ public class SplashActivity extends Activity {
                     sleep(1000);
                 } catch (Exception e) {
                     e.printStackTrace();
+
+
                 } finally {
                     Intent openClass = new Intent(SplashActivity.this, MainActivity.class);
                     finish();
