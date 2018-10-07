@@ -2,24 +2,20 @@ package com.jennytanginan.sikatuna_parish.myapplication;
 
 import android.app.AlarmManager;
 import android.app.PendingIntent;
-import android.content.Context;
 import android.content.Intent;
-import android.content.SharedPreferences;
 import android.graphics.drawable.ColorDrawable;
 import android.os.Bundle;
+import android.support.annotation.NonNull;
+import android.support.design.widget.BottomNavigationView;
 import android.support.v4.app.FragmentTransaction;
 import android.support.v7.app.AppCompatActivity;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
-import android.widget.ArrayAdapter;
-import android.widget.PopupMenu;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import com.loopj.android.http.JsonHttpResponseHandler;
-import com.loopj.android.http.RequestParams;
 import com.roomorama.caldroid.CaldroidFragment;
 import com.roomorama.caldroid.CaldroidListener;
 
@@ -32,10 +28,8 @@ import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
-import java.util.logging.Formatter;
 
 import cz.msebera.android.httpclient.Header;
-import hirondelle.date4j.DateTime;
 
 public class HomeActivity extends AppCompatActivity {
     public static JSONObject response = new JSONObject();
@@ -43,6 +37,37 @@ public class HomeActivity extends AppCompatActivity {
     ApiUtils apiUtils;
     CurrentUser currentUser;
     Boolean showUnconfirmedEvents = false;
+    JSONArray priestUsers;
+
+    private BottomNavigationView.OnNavigationItemSelectedListener mOnNavigationItemSelectedListener
+            = new BottomNavigationView.OnNavigationItemSelectedListener() {
+
+        @Override
+        public boolean onNavigationItemSelected(@NonNull MenuItem item) {
+            switch (item.getItemId()) {
+                case R.id.add_event:
+                    Intent intent = new Intent(HomeActivity.this, AddNewEventActivity.class);
+                    intent.putExtra("priest_users", priestUsers.toString());
+                    startActivity(intent);
+                    return true;
+                case R.id.view_events:
+                    if (HomeActivity.response.length() != 0) {
+                        Intent intentx = new Intent(HomeActivity.this, EventActivity.class);
+                        intentx.putExtra("events", HomeActivity.response.toString());
+                        startActivity(intentx);
+                    }else{
+                        HomeActivity homeActivity = HomeActivity.this;
+                        homeActivity.setErrorText("No data to show.");
+                    }
+                    return true;
+                case R.id.view_groups:
+                    Intent intenty = new Intent(HomeActivity.this, GroupActivity.class);
+                    startActivity(intenty);
+                    return true;
+            }
+            return false;
+        }
+    };
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -51,6 +76,25 @@ public class HomeActivity extends AppCompatActivity {
 
         apiUtils = new ApiUtils(this);
         currentUser = new CurrentUser(this);
+
+        BottomNavigationView navigation = findViewById(R.id.navigation);
+        navigation.setOnNavigationItemSelectedListener(mOnNavigationItemSelectedListener);
+
+        JsonHttpResponseHandler jhrh = new JsonHttpResponseHandler(){
+            @Override
+            public void onSuccess(int statusCode, Header[] headers, JSONArray response) {
+                System.out.println(response);
+                HomeActivity homeActivity = HomeActivity.this;
+                homeActivity.priestUsers = response;
+            }
+
+            @Override
+            public void onFailure(int statusCode, Header[] headers, Throwable throwable, JSONObject errorResponse) {
+                super.onFailure(statusCode, headers, throwable, errorResponse);
+
+            }
+        };
+        apiUtils.getPriestUsers(jhrh);
 
         this.getUserData();
 
@@ -173,6 +217,8 @@ public class HomeActivity extends AppCompatActivity {
 
 
                     if (System.currentTimeMillis() < eventAlarmDate.getTime()) {
+                        System.out.println("ALARM IN:");
+                        System.out.println(eventAlarmDate);
                         Intent intent = new Intent(this, AlarmReceiver.class);
                         intent.putExtra("event", thisObj.toString());
                         PendingIntent pi = PendingIntent.getBroadcast(this, thisObj.getInt("id"), intent, thisObj.getInt("id"));

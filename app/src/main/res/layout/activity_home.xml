@@ -22,30 +22,27 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content" />
 
-            <Button
-                android:id="@+id/view_all_events"
-                android:onClick="showAllEvents"
-                android:backgroundTint="@color/colorPrimary"
-                android:textColor="@color/caldroid_white"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:text="View Events" />
-
-            <Button
-                android:id="@+id/view_groups_button"
-                android:onClick="viewGroups"
-                android:backgroundTint="@color/colorPrimary"
-                android:textColor="@color/caldroid_white"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:text="@string/view_groups" />
-
             <TextView
                 android:id="@+id/home_error_text"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:textAlignment="center"
                 android:text="" />
+
+
         </LinearLayout>
     </FrameLayout>
+
+    <android.support.design.widget.BottomNavigationView
+        android:id="@+id/navigation"
+        android:layout_width="0dp"
+        android:backgroundTint="@color/gray_holo_light"
+        android:layout_height="wrap_content"
+        android:layout_marginEnd="0dp"
+        android:layout_marginStart="0dp"
+        android:background="?android:attr/windowBackground"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintRight_toRightOf="parent"
+        app:menu="@menu/navigation" />
 </android.support.constraint.ConstraintLayout>

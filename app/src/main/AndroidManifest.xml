@@ -35,7 +35,10 @@
         <activity android:name=".AddGroupActivity" />
         <activity android:name=".EditEventActivity" />
         <activity android:name=".ConfirmEventActivity" />
-        <activity android:name=".SettingsActivity"></activity>
+        <activity android:name=".SettingsActivity" />
+        <activity
+            android:name=".Main2Activity"
+            android:label="@string/title_activity_main2"></activity>
     </application>
 
 </manifest>

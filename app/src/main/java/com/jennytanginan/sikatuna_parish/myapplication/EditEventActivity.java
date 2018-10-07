@@ -206,9 +206,7 @@ public class EditEventActivity extends AppCompatActivity implements AdapterView.
         JsonHttpResponseHandler jhrh = new JsonHttpResponseHandler() {
             @Override
             public void onSuccess(int statusCode, Header[] headers, JSONObject response) {
-                Intent intent = new Intent(EditEventActivity.this, EventActivity.class);
-                finish();
-                startActivity(intent);
+                createEventResponse.setText("Event successfully updated.");
             }
 
             @Override
