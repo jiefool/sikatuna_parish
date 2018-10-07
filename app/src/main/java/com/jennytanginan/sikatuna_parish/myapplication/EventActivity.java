@@ -73,9 +73,6 @@ public class EventActivity extends AppCompatActivity implements MyAdapter.ItemCl
         }
 
         currentUser = new CurrentUser(this);
-        String type = currentUser.getType();
-        System.out.println("type: "+type);
-        addEvent = findViewById(R.id.add_new_event);
 
         JsonHttpResponseHandler jhrh = new JsonHttpResponseHandler(){
             @Override

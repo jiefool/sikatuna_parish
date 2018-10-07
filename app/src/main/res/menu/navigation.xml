@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android">
+
+    <item
+        android:id="@+id/add_event"
+        android:icon="@drawable/ic_event_24dp"
+        android:title="@string/add_event" />
+
+    <item
+        android:id="@+id/view_events"
+        android:icon="@drawable/ic_event_available_24dp"
+        android:title="@string/view_events" />
+
+    <item
+        android:id="@+id/view_groups"
+        android:icon="@drawable/ic_group_24dp"
+        android:title="@string/view_groups" />
+
+</menu>
