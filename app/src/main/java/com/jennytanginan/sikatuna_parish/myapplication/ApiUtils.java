@@ -22,8 +22,8 @@ public class ApiUtils {
         String url = "oauth/token";
         RequestParams params = new RequestParams();
         params.add("grant_type", "password");
-        params.add("client_id", "2");
-        params.add("client_secret", "ZiRgHlb3r0zMaovxii6xvxoVMC1bILVVIDglKVqe");
+        params.add("client_id", "1");
+        params.add("client_secret", "bB6g1BNR6VIHqn6dlRxI4aROkHm4qWD8s5UPSAws");
         params.add("username", email);
         params.add("password", password);
         params.add("scope", "*");
