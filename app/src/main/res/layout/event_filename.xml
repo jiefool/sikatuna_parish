@@ -32,5 +32,7 @@
         android:id="@+id/save_event_to_docs"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        android:backgroundTint="@color/colorPrimary"
+        android:textColor="@color/caldroid_white"
         android:text="@string/save_to_docs" />
 </LinearLayout>
