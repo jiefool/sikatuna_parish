@@ -113,6 +113,7 @@ public class SettingsActivity extends AppCompatActivity {
             @Override
             public void onFailure(int statusCode, Header[] headers, Throwable throwable, JSONObject errorResponse) {
                 System.out.println(errorResponse);
+                responseText.setText("Update failed.");
             }
         };
 

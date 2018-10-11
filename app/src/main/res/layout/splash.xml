@@ -7,10 +7,16 @@
     android:layout_width="fill_parent"
     android:layout_height="fill_parent">
 
-    <ImageView
-        android:layout_width="wrap_content"
-        android:layout_height="fill_parent"
-        android:src="@drawable/app_logo"
-        android:layout_gravity="center" />
+    <FrameLayout
+        android:layout_gravity="center"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
+        <ImageView
+            android:layout_gravity="center"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:src="@drawable/app_logo" />
+    </FrameLayout>
+
 
 </android.support.constraint.ConstraintLayout>
