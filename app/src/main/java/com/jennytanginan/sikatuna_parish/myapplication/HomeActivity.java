@@ -3,6 +3,7 @@ package com.jennytanginan.sikatuna_parish.myapplication;
 import android.app.AlarmManager;
 import android.app.PendingIntent;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.graphics.drawable.ColorDrawable;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
@@ -182,7 +183,7 @@ public class HomeActivity extends AppCompatActivity {
         errorTextView.setText(errorText);
     }
 
-    public void setEventAlarms(JSONObject events){
+    public void setEventAlarms(JSONObject events) throws JSONException {
         JSONArray ea = new JSONArray();
 
         try {
@@ -192,49 +193,58 @@ public class HomeActivity extends AppCompatActivity {
         }
 
         AlarmManager am = (AlarmManager) getSystemService(ALARM_SERVICE);
+        Integer currentUserId = Integer.parseInt(currentUser.getUserId());
+        String currentUserType = currentUser.getType();
+
         ArrayList<PendingIntent> intentArray = new ArrayList<PendingIntent>();
         for (int i=0; i < ea.length(); i++) {
             JSONObject thisObj = new JSONObject();
             try {
-               thisObj = ea.getJSONObject(i);
+                thisObj = ea.getJSONObject(i);
             } catch (JSONException e) {
                 e.printStackTrace();
             }
 
-
-            try {
-                SimpleDateFormat formatter = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
-                try {
-                    Date eventAlarmDate = formatter.parse(thisObj.getString("alarm"));
-                    Date eventStartDate = formatter.parse(thisObj.getString("time_start"));
-                    Calendar cal = Calendar.getInstance();
-                    cal.setTime(eventAlarmDate);
-
-                    ColorDrawable primary = new ColorDrawable(getResources().getColor(R.color.colorPrimary));
-                    caldroidFragment.setBackgroundDrawableForDate(primary, eventStartDate);
-                    caldroidFragment.setTextColorForDate(R.color.colorAccent, eventStartDate);
-                    caldroidFragment.refreshView();
+            Integer isConfirmed = thisObj.getInt("is_confirmed");
+            Integer userId = thisObj.getInt("user_id");
 
 
-                    if (System.currentTimeMillis() < eventAlarmDate.getTime()) {
-                        System.out.println("ALARM IN:");
-                        System.out.println(eventAlarmDate);
-                        Intent intent = new Intent(this, AlarmReceiver.class);
-                        intent.putExtra("event", thisObj.toString());
-                        PendingIntent pi = PendingIntent.getBroadcast(this, thisObj.getInt("id"), intent, thisObj.getInt("id"));
-                        am.cancel(pi);
-                        am.set(AlarmManager.RTC_WAKEUP, cal.getTimeInMillis(), pi);
-                        intentArray.add(pi);
+            if (isConfirmed == 1){
+                if (currentUserType.equals("secretary") || currentUserId == userId) {
+                    try {
+                        SimpleDateFormat formatter = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+                        try {
+                            Date eventAlarmDate = formatter.parse(thisObj.getString("alarm"));
+                            Date eventStartDate = formatter.parse(thisObj.getString("time_start"));
+                            Calendar cal = Calendar.getInstance();
+                            cal.setTime(eventAlarmDate);
+
+                            ColorDrawable primary = new ColorDrawable(getResources().getColor(R.color.colorPrimary));
+                            caldroidFragment.setBackgroundDrawableForDate(primary, eventStartDate);
+                            caldroidFragment.setTextColorForDate(R.color.colorAccent, eventStartDate);
+                            caldroidFragment.refreshView();
+
+
+                            if (System.currentTimeMillis() < eventAlarmDate.getTime()) {
+                                System.out.println("ALARM IN:");
+                                System.out.println(eventAlarmDate);
+                                Intent intent = new Intent(this, AlarmReceiver.class);
+                                intent.putExtra("event", thisObj.toString());
+                                PendingIntent pi = PendingIntent.getBroadcast(this, thisObj.getInt("id"), intent, thisObj.getInt("id"));
+                                am.cancel(pi);
+                                am.set(AlarmManager.RTC_WAKEUP, cal.getTimeInMillis(), pi);
+                                intentArray.add(pi);
+                            }
+
+
+                        } catch (ParseException e) {
+
+                            e.printStackTrace();
+                        }
+                    } catch (JSONException e) {
+                        e.printStackTrace();
                     }
-
-
-
-                } catch (ParseException e) {
-
-                    e.printStackTrace();
                 }
-            } catch (JSONException e) {
-                e.printStackTrace();
             }
         }
     }
@@ -303,7 +313,11 @@ public class HomeActivity extends AppCompatActivity {
                 System.out.println(response);
                 HomeActivity.response = response;
                 HomeActivity homeActivity = HomeActivity.this;
-                homeActivity.setEventAlarms(response);
+                try {
+                    homeActivity.setEventAlarms(response);
+                } catch (JSONException e) {
+                    e.printStackTrace();
+                }
                 try {
                     if (!showUnconfirmedEvents){
                         showUnconfirmedEvents = true;
@@ -370,13 +384,14 @@ public class HomeActivity extends AppCompatActivity {
                 String eventUserId = thisObj.getJSONObject("user").getString("id");
 
                 if (thisObj.getInt("is_confirmed") == 0 && currentUserId == eventUserId){
-                  Intent intent = new Intent(HomeActivity.this, ConfirmEventActivity.class);
-                  intent.putExtra("event", thisObj.toString());
-                  startActivity(intent);
+                    Intent intent = new Intent(HomeActivity.this, ConfirmEventActivity.class);
+                    intent.putExtra("event", thisObj.toString());
+                    startActivity(intent);
                 }
             } catch (JSONException e) {
                 e.printStackTrace();
             }
+
         }
     }
 }

@@ -1,6 +1,9 @@
 package com.jennytanginan.sikatuna_parish.myapplication;
 
+import android.app.Activity;
+import android.content.Context;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.view.View;
@@ -26,7 +29,7 @@ public class ConfirmEventActivity extends AppCompatActivity {
     TextView details;
     JSONObject eventObj;
     ApiUtils apiUtils;
-
+    Context context;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -42,6 +45,7 @@ public class ConfirmEventActivity extends AppCompatActivity {
         priest = findViewById(R.id.priest);
         details = findViewById(R.id.details);
         apiUtils = new ApiUtils(this);
+        context = this;
 
         try {
             eventObj = new JSONObject(event);
@@ -70,14 +74,32 @@ public class ConfirmEventActivity extends AppCompatActivity {
 
     }
 
-    public void cancel(View view) {
-        finish();
+    public void cancel(View view) throws JSONException {
+        String eventId = eventObj.getString("id");
+        JsonHttpResponseHandler jhrh = new JsonHttpResponseHandler() {
+            @Override
+            public void onSuccess(int statusCode, Header[] headers, JSONObject response) {
+                Intent intent = new Intent(context, EventActivity.class);
+                intent.putExtra("events", "");
+                context.startActivity(intent);
+                ((Activity) context).finish();
+            }
+
+            @Override
+            public void onFailure(int statusCode, Header[] headers, Throwable throwable, JSONObject errorResponse) {
+                EventActivity eventActivity = new EventActivity();
+                eventActivity.setErrorText("Unable to delete event.");
+            }
+        };
+        apiUtils.deleteEvent(eventId, jhrh);
     }
 
     public void confirmEvent(View view) {
         String eventId = null;
         try {
+
             eventId = eventObj.getString("id");
+
         } catch (JSONException e) {
             e.printStackTrace();
         }
