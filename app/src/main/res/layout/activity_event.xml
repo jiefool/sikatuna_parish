@@ -16,7 +16,7 @@
             android:id="@+id/event_list"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            android:layout_weight=".15">
+            android:layout_weight=".12">
 
         </android.support.v7.widget.RecyclerView>
 
@@ -27,14 +27,6 @@
             android:text="@string/add_event"
             android:textColor="@color/caldroid_white"
             android:layout_height="wrap_content" />
-
-        <TextView
-            android:id="@+id/response_text"
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:layout_weight="1"
-            android:text=""
-            android:textAlignment="center" />
 
 
     </LinearLayout>

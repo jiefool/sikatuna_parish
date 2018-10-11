@@ -1,21 +1,15 @@
 package com.jennytanginan.sikatuna_parish.myapplication;
 
-import android.app.DialogFragment;
 import android.content.Context;
 import android.content.Intent;
-import android.media.Ringtone;
-import android.media.RingtoneManager;
 import android.net.Uri;
-import android.os.Environment;
-import android.os.SystemClock;
-import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.os.Environment;
+import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.util.Log;
-import android.view.LayoutInflater;
 import android.view.View;
-import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -27,23 +21,11 @@ import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.io.File;
-import java.io.FileNotFoundException;
-import java.io.FileOutputStream;
-import java.io.FileWriter;
-import java.io.IOException;
-import java.io.OutputStreamWriter;
-import java.text.SimpleDateFormat;
 import java.util.ArrayList;
-import java.util.Calendar;
-import java.util.Date;
 
 import cz.msebera.android.httpclient.Header;
 
-import static android.os.Environment.DIRECTORY_DOCUMENTS;
-import static android.os.Environment.getExternalStorageDirectory;
 import static android.os.Environment.getExternalStoragePublicDirectory;
-import static android.os.Environment.getExternalStorageState;
-import static android.os.Environment.getRootDirectory;
 import static com.loopj.android.http.AsyncHttpClient.LOG_TAG;
 
 public class EventActivity extends AppCompatActivity implements MyAdapter.ItemClickListener {
@@ -66,7 +48,7 @@ public class EventActivity extends AppCompatActivity implements MyAdapter.ItemCl
         Intent intent = getIntent();
         events = intent.getStringExtra("events");
 
-        if (events == null){
+        if (events == null || events.isEmpty()){
             this.getEvents();
         }else{
             populateEventList();
@@ -137,7 +119,17 @@ public class EventActivity extends AppCompatActivity implements MyAdapter.ItemCl
             eventObjects = new JSONObject(events);
             JSONArray eventList = eventObjects.getJSONArray("events");
             for (int i=0; i < eventList.length(); i++) {
-                eventObjectList.add( eventList.getJSONObject(i));
+                CurrentUser currentUser = new CurrentUser(this);
+                String currentUserType = currentUser.getType();
+                String currentUserId = currentUser.getUserId();
+                String userId = eventList.getJSONObject(i).getJSONObject("user").getString("id");
+                if(currentUserType.equals("secretary") && eventList.getJSONObject(i).getInt("is_confirmed") == 1 ){
+                    eventObjectList.add( eventList.getJSONObject(i));
+                }else{
+                    if (currentUserId.equals(userId)  && eventList.getJSONObject(i).getInt("is_confirmed") == 1){
+                        eventObjectList.add( eventList.getJSONObject(i));
+                    }
+                }
             }
         } catch (JSONException e) {
             e.printStackTrace();

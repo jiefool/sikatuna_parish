@@ -151,6 +151,18 @@ public class AddNewEventActivity extends AppCompatActivity implements AdapterVie
         params.add("details", details);
         params.add("user_id", userId);
 
+        CurrentUser currentUser = new CurrentUser(this);
+
+        if(currentUser.getUserId().equals(userId)){
+            params.add("is_confirmed", "true");
+        }else{
+            params.add("is_confirmed", "false");
+        }
+
+
+
+
+
         JsonHttpResponseHandler jhrh = new JsonHttpResponseHandler() {
             @Override
             public void onSuccess(int statusCode, Header[] headers, JSONObject response) {

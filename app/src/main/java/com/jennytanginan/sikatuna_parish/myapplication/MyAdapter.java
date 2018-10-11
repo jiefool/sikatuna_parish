@@ -90,7 +90,9 @@ public class MyAdapter extends RecyclerView.Adapter<MyAdapter.ViewHolder> {
                             @Override
                             public void onSuccess(int statusCode, Header[] headers, JSONObject response) {
                               Intent intent = new Intent(context, EventActivity.class);
+                              intent.putExtra("events", "");
                               context.startActivity(intent);
+                              ((Activity) context).finish();
                             }
 
                             @Override
