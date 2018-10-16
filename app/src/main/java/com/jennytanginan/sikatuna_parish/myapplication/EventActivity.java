@@ -123,7 +123,7 @@ public class EventActivity extends AppCompatActivity implements MyAdapter.ItemCl
                 String currentUserType = currentUser.getType();
                 String currentUserId = currentUser.getUserId();
                 String userId = eventList.getJSONObject(i).getJSONObject("user").getString("id");
-                if(currentUserType.equals("secretary") && eventList.getJSONObject(i).getInt("is_confirmed") == 1 ){
+                if(currentUserType.equals("secretary") ){
                // if(currentUserType.equals("secretary") && eventList.getJSONObject(i).getInt("is_confirmed") == 1 ){
                     eventObjectList.add( eventList.getJSONObject(i));
                 }else{

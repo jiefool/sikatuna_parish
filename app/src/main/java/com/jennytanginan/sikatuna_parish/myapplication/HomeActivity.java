@@ -209,7 +209,7 @@ public class HomeActivity extends AppCompatActivity {
             Integer userId = thisObj.getInt("user_id");
 
 
-            if (isConfirmed == 1){
+            //if (isConfirmed == 1){
                 if (currentUserType.equals("secretary") || currentUserId == userId) {
                     try {
                         SimpleDateFormat formatter = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
@@ -245,7 +245,7 @@ public class HomeActivity extends AppCompatActivity {
                         e.printStackTrace();
                     }
                 }
-            }
+            //}
         }
     }
 
